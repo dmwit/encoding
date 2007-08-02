@@ -49,6 +49,7 @@ instance Encoding DynEncoding where
 	decodeLazy (DynEncoding enc) = decodeLazy enc
 	decodable (DynEncoding enc) = decodable enc
 
+-- | Takes the name of an encoding and creates a dynamic encoding from it.
 encodingFromString :: String -> DynEncoding
 encodingFromString "ASCII"	= DynEncoding ASCII
 encodingFromString "UTF-8"	= DynEncoding UTF8
