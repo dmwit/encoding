@@ -12,7 +12,8 @@ Homepage:	http://code.haskell.org/encoding/
 Build-Depends:	base, template-haskell
 Extensions:	TemplateHaskell,CPP,ExistentialQuantification
 C-Sources:	system_encoding.c
-Includes:	system_encoding.h
+Include-Dirs:	.
+Install-Includes:	system_encoding.h
 Exposed-Modules:
 	Data.Encoding
 	Data.Encoding.ASCII
