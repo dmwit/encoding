@@ -19,6 +19,7 @@ module Data.Encoding.Base
 import Data.Array(array)
 import Data.ByteString (ByteString,unfoldrN,unfoldr,length,index,unpack)
 import qualified Data.ByteString.Lazy as LBS
+import Data.Encoding.Helper.Template
 import Data.ByteString.Base(unsafeIndex)
 import Data.Map (Map,fromList,lookup)
 import Data.Char(chr)
@@ -100,6 +101,7 @@ data EncodeState
 	| Put1 !Word8
 	| Put2 !Word8 !Word8
 	| Put3 !Word8 !Word8 !Word8
+	deriving Show
 
 -- | This exception type is thrown whenever something went wrong during the
 --   encoding-process.
@@ -115,20 +117,13 @@ data DecodingException
 					--   byte that couldn't be decoded.
 	| UnexpectedEnd			-- ^ more bytes were needed to allow a
 					--   successfull decoding.
+	| OutOfRange			-- ^ the decoded value was out of the unicode range
 	deriving (Show,Typeable)
 
 decodingArray :: FilePath -> Q Exp
--- Haddock hates template haskell...
-#ifndef __HADDOCK__
 decodingArray file = do
 	trans <- runIO (readTranslation file)
-	return $ AppE
-		(AppE
-			(VarE 'array)
-			(TupE [LitE $ IntegerL 0,LitE $ IntegerL 255]))
-		(ListE [ TupE [LitE $ IntegerL from,LitE $ CharL to]
-			| (from,to) <- trans ])
-#endif
+	createCharArray trans 0 255
 
 encodingMap :: FilePath -> Q Exp
 #ifndef __HADDOCK__

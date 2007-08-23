@@ -37,6 +37,7 @@ import Data.Encoding.CP1256
 import Data.Encoding.CP1257
 import Data.Encoding.CP1258
 import Data.Encoding.KOI8R
+import Data.Encoding.GB18030
 
 -- | An untyped encoding. Used in 'System.IO.Encoding.getSystemEncoding'.
 data DynEncoding = forall t. Encoding t => DynEncoding t
@@ -80,4 +81,5 @@ encodingFromString "CP1255"	= DynEncoding CP1255
 encodingFromString "CP1256"	= DynEncoding CP1256
 encodingFromString "CP1257"	= DynEncoding CP1257
 encodingFromString "CP1258"	= DynEncoding CP1258
+encodingFromString "GB18030"	= DynEncoding GB18030
 encodingFromString str		= error $ "Unknown encoding: "++show str
