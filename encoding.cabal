@@ -1,5 +1,5 @@
 Name:		encoding
-Version:	0.1
+Version:	0.2
 Author:		Henning Günther
 Maintainer:	h.guenther@tu-bs.de
 License:	BSD3
@@ -51,6 +51,7 @@ Exposed-Modules:
 Other-Modules:
 	Data.Encoding.Base
 	Data.Encoding.GB18030Data
+	Data.Encoding.Helper.Template
 Extra-Source-Files:
 	8859-2.TXT
 	8859-3.TXT
@@ -75,3 +76,7 @@ Extra-Source-Files:
 	CP1256.TXT
 	CP1257.TXT
 	CP1258.TXT
+	gb-18030-2000.xml
+	system_encoding.h
+	create_gb18030_data.sh
+	NEWS
