@@ -2,11 +2,15 @@ module Data.Encoding
 	(Encoding(..)
 	,EncodingException(..)
 	,DecodingException(..)
+	,recode
+	,recodeLazy
 	,DynEncoding()
 	,encodingFromString
 	)
 	where
 
+import Data.ByteString (ByteString)
+import qualified Data.ByteString.Lazy as Lazy (ByteString)
 import Data.Encoding.Base
 import Data.Encoding.ASCII
 import Data.Encoding.UTF8
@@ -49,6 +53,13 @@ instance Encoding DynEncoding where
 	decode (DynEncoding enc) = decode enc
 	decodeLazy (DynEncoding enc) = decodeLazy enc
 	decodable (DynEncoding enc) = decodable enc
+
+-- | This decodes a string from one encoding and encodes it into another.
+recode :: (Encoding from,Encoding to) => from -> to -> ByteString -> ByteString
+recode enc_f enc_t bs = encode enc_t (decode enc_f bs)
+
+recodeLazy :: (Encoding from,Encoding to) => from -> to -> Lazy.ByteString -> Lazy.ByteString
+recodeLazy enc_f enc_t bs = encodeLazy enc_t (decodeLazy enc_f bs)
 
 -- | Takes the name of an encoding and creates a dynamic encoding from it.
 encodingFromString :: String -> DynEncoding
