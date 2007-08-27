@@ -12,7 +12,7 @@ import Data.Word
 import Prelude hiding (length)
 import Control.Exception
 
-data UTF8 = UTF8
+data UTF8 = UTF8 deriving Show
 
 encodeUTF8 :: Char -> (Word8,EncodeState)
 encodeUTF8 x

@@ -44,7 +44,7 @@ import Data.Encoding.KOI8R
 import Data.Encoding.GB18030
 
 -- | An untyped encoding. Used in 'System.IO.Encoding.getSystemEncoding'.
-data DynEncoding = forall t. Encoding t => DynEncoding t
+data DynEncoding = forall t. (Encoding t,Show t) => DynEncoding t 
 
 instance Encoding DynEncoding where
 	encode (DynEncoding enc) = encode enc
@@ -53,6 +53,9 @@ instance Encoding DynEncoding where
 	decode (DynEncoding enc) = decode enc
 	decodeLazy (DynEncoding enc) = decodeLazy enc
 	decodable (DynEncoding enc) = decodable enc
+
+instance Show DynEncoding where
+	show (DynEncoding enc) = "DynEncoding "++show enc
 
 -- | This decodes a string from one encoding and encodes it into another.
 recode :: (Encoding from,Encoding to) => from -> to -> ByteString -> ByteString

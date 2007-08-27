@@ -11,7 +11,7 @@ import Prelude hiding (lookup)
 
 import Data.Encoding.Base
 
-data KOI8R = KOI8R
+data KOI8R = KOI8R deriving Show
 
 koi8rArr :: UArray Word8 Char
 koi8rArr = listArray (128,255) koi8rList

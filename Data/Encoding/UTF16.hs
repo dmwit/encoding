@@ -16,7 +16,7 @@ import Prelude hiding (length)
 import Control.Exception
 import Data.Dynamic (toDyn)
 
-data UTF16 = UTF16
+data UTF16 = UTF16 deriving Show
 
 utf16enc :: (EncodeState,String) -> Maybe (Word8,(EncodeState,String))
 utf16enc (Done,[])   = Nothing

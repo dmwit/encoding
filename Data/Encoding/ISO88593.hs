@@ -10,7 +10,7 @@ import Data.Encoding.Base
 import Prelude hiding (lookup)
 import Control.Exception (throwDyn)
 
-data ISO88593 = ISO88593
+data ISO88593 = ISO88593 deriving Show
 
 enc :: Char -> Word8
 enc c = case lookup c encodeMap of

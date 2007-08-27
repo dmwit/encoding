@@ -8,7 +8,7 @@ import Data.Encoding.Base
 import Prelude hiding (lookup)
 import Control.Exception (throwDyn)
 
-data ISO88598 = ISO88598
+data ISO88598 = ISO88598 deriving Show
 
 instance Encoding ISO88598 where
 	encode _ = encodeSinglebyte (\c -> case lookup c encodeMap of

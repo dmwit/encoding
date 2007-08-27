@@ -8,7 +8,7 @@ import Data.Encoding.Base
 import Data.Word
 import Control.Exception (throwDyn)
 
-data UTF32 = UTF32
+data UTF32 = UTF32 deriving Show
 
 instance Encoding UTF32 where
 	encode _ = encodeMultibyte encodeUTF32

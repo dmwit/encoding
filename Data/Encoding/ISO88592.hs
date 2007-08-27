@@ -12,7 +12,7 @@ import Data.ByteString hiding (length,map)
 import Prelude hiding (lookup,all)
 import Control.Exception
 
-data ISO88592 = ISO88592
+data ISO88592 = ISO88592 deriving Show
 
 enc :: Char -> Word8
 enc c = case lookup c encodeMap of

@@ -16,7 +16,7 @@ import Data.ByteString.Base (ByteString,c2w,w2c,unsafeIndex)
 
 import Data.Encoding.GB18030Data
 
-data GB18030 = GB18030
+data GB18030 = GB18030 deriving Show
 
 instance Encoding GB18030 where
 	encode _ = encodeMultibyte encodeGB

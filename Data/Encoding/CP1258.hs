@@ -9,7 +9,7 @@ import Data.Encoding.Base
 import Prelude hiding (lookup,all)
 import Control.Exception (throwDyn)
 
-data CP1258 = CP1258
+data CP1258 = CP1258 deriving Show
 
 instance Encoding CP1258 where
 	encode _ = encodeSinglebyte (\c -> case lookup c encodeMap of

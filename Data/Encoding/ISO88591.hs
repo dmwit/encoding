@@ -11,7 +11,7 @@ import Data.Char(ord,chr)
 import Data.Word
 import Control.Exception
 
-data ISO88591 = ISO88591
+data ISO88591 = ISO88591 deriving Show
 
 enc :: Char -> Word8
 enc c = if ord c < 256

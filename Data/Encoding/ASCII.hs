@@ -14,7 +14,7 @@ import qualified Data.ByteString.Lazy as Lazy
 import Data.Encoding.Base
 import Data.Word
 
-data ASCII = ASCII
+data ASCII = ASCII deriving Show
 
 charToASCII :: Char -> Word8
 charToASCII ch = if ch < '\128'
