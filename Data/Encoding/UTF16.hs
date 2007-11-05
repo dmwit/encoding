@@ -11,16 +11,19 @@ import Data.Int
 import Data.Word
 import Data.ByteString
 import qualified Data.ByteString.Lazy as LBS
-import Data.ByteString.Base(w2c,c2w)
 import Prelude hiding (length)
 import Control.Exception
 import Data.Dynamic (toDyn)
 
-data UTF16 = UTF16 deriving Show
+data UTF16
+	= UTF16
+	| UTF16BE
+	| UTF16LE
+	deriving (Eq,Show)
 
-utf16enc :: (EncodeState,String) -> Maybe (Word8,(EncodeState,String))
-utf16enc (Done,[])   = Nothing
-utf16enc (Done,x:xs)
+utf16enc :: Bool -> (EncodeState,String) -> Maybe (Word8,(EncodeState,String))
+utf16enc _ (Done,[])   = Nothing
+utf16enc True (Done,x:xs)
 	| n<=0x0000FFFF = Just
 		(fromIntegral $ n `shiftR` 8
 		,(Put1 (fromIntegral $ n),xs))
@@ -34,9 +37,23 @@ utf16enc (Done,x:xs)
 	where
 	n  = ord x
 	n' = n - 0x10000
-utf16enc (Put3 w1 w2 w3,xs) = Just (w1,(Put2 w2 w3,xs))
-utf16enc (Put2 w1 w2,xs) = Just (w1,(Put1 w2,xs))
-utf16enc (Put1 w1,xs) = Just (w1,(Done,xs))
+utf16enc False (Done,x:xs)
+	| n<=0x0000FFFF = Just
+		(fromIntegral $ n
+		,(Put1 (fromIntegral $ n `shiftR` 8),xs))
+	| n<=0x0010FFFF = Just
+		(fromIntegral n'
+		,(Put3 (fromIntegral $
+			0xDC .|. ((n' `shiftR` 8) .&. 0x03))
+			(fromIntegral $ (n' `shiftR` 10))
+			(fromIntegral $ 0xD8 .|. (n' `shiftR` 18)),xs))
+	| otherwise = throwDyn $ HasNoRepresentation x
+	where
+	n  = ord x
+	n' = n - 0x10000
+utf16enc _ (Put3 w1 w2 w3,xs) = Just (w1,(Put2 w2 w3,xs))
+utf16enc _ (Put2 w1 w2,xs) = Just (w1,(Put1 w2,xs))
+utf16enc _ (Put1 w1,xs) = Just (w1,(Done,xs))
 
 {-# SPECIALIZE utf16dec :: Bool -> Word8 -> Word8 -> Word8 -> Word8 -> (Char,Int) #-}
 {-# SPECIALIZE utf16dec :: Bool -> Word8 -> Word8 -> Word8 -> Word8 -> (Char,Int64) #-}
@@ -54,8 +71,12 @@ utf16dec be s1 s2 s3 s4
 	(w1,w2,w3,w4) = if be then (s1,s2,s3,s4) else (s2,s1,s4,s3)
 
 instance Encoding UTF16 where
-	encode _ str = unfoldr utf16enc (Put2 0xFE 0xFF,str)
-	encodeLazy _ str = LBS.unfoldr utf16enc (Put2 0xFE 0xFF,str)
+	encode enc str = unfoldr (utf16enc (enc/=UTF16LE)) (case enc of
+		UTF16 -> Put2 0xFE 0xFF
+		_ -> Done,str)
+	encodeLazy enc str = LBS.unfoldr (utf16enc (enc/=UTF16LE)) (case enc of
+		UTF16 -> Put2 0xFE 0xFF
+		_ -> Done,str)
 	encodable _ c = ord c <= 0x0010FFFF
 	decode _ str = case findByteOrder str of
 		Nothing -> decode' True 0
