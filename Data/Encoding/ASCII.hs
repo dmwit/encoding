@@ -9,7 +9,7 @@ import Control.Exception (throwDyn)
 import Data.ByteString (pack)
 import qualified Data.ByteString.Lazy as Lazy (pack)
 import Data.ByteString.Char8 (unpack)
-import Data.ByteString.Base (c2w)
+import Data.Char (ord)
 import qualified Data.ByteString.Lazy as Lazy
 import Data.Encoding.Base
 import Data.Word
@@ -18,7 +18,7 @@ data ASCII = ASCII deriving Show
 
 charToASCII :: Char -> Word8
 charToASCII ch = if ch < '\128'
-	then c2w ch
+	then fromIntegral $ ord ch
 	else throwDyn (HasNoRepresentation ch)
 
 instance Encoding ASCII where

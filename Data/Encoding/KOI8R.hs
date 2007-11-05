@@ -3,7 +3,7 @@ module Data.Encoding.KOI8R
 
 import Control.Exception (throwDyn)
 import Data.Array.Unboxed
-import Data.ByteString.Base (c2w,w2c)
+import Data.Char (ord,chr)
 import qualified Data.ByteString.Lazy as Lazy
 import Data.Map hiding (map,(!))
 import Data.Word
@@ -40,12 +40,12 @@ koi8rList =
 
 koi8rDecode :: Word8 -> Char
 koi8rDecode ch
-	| ch < 128 = w2c ch
+	| ch < 128 = chr $ fromIntegral ch
 	| otherwise = koi8rArr!ch
 
 koi8rEncode :: Char -> Word8
 koi8rEncode ch
-	| ch < '\128' = c2w ch
+	| ch < '\128' = fromIntegral $ ord ch
 	| otherwise   = case lookup ch koi8rMap of
 		Just w -> w
 		Nothing -> throwDyn (HasNoRepresentation ch)

@@ -6,7 +6,6 @@ module Data.Encoding.UTF8
 import Data.Bits
 import Data.Char (ord,chr)
 import Data.Encoding.Base
-import Data.ByteString.Base(c2w,w2c)
 import Data.ByteString
 import Data.Word
 import Prelude hiding (length)
@@ -34,11 +33,11 @@ encodeUTF8 x
 	| otherwise = throwDyn (HasNoRepresentation x)
 	where
 	n = ord x
-	v = c2w x
+	v = fromIntegral $ ord x
 
 decodeUTF8 :: [Word8] -> (Char,[Word8])
 decodeUTF8 ~(w1:rest1)
-	| w1<=0x7F = (w2c w1,rest1)
+	| w1<=0x7F = (chr $ fromIntegral w1,rest1)
 	| w1<=0xBF = throwDyn (IllegalCharacter w1)
 	| w1<=0xDF = case rest1 of
 		(w2:rest2) -> (chr $ ((fromIntegral $ w1 .&. 0x1F) `shiftL` 6)

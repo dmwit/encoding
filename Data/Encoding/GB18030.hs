@@ -7,12 +7,13 @@ module Data.Encoding.GB18030
 	where
 
 import Control.Exception
-import Data.Char
+import Data.Char (chr,ord)
 import Data.Word
 import Data.Bits
 import Data.Encoding.Base
+import Data.ByteString (ByteString)
 import qualified Data.ByteString as BS
-import Data.ByteString.Base (ByteString,c2w,w2c,unsafeIndex)
+import Data.ByteString.Base (unsafeIndex)
 
 import Data.Encoding.GB18030Data
 
@@ -151,7 +152,7 @@ delinear n = let
 
 decodeGB :: [Word8] -> (Char,[Word8])
 decodeGB (w1:rst)
-	| w1 <=0x80	= (w2c w1,rst)	-- it's ascii
+	| w1 <=0x80	= (chr $ fromIntegral w1,rst)	-- it's ascii
 	| w1 <=0xFE	= case rst of
 		w2:rst2
 			| w2 < 0x30	-> throwDyn (IllegalCharacter w2)
