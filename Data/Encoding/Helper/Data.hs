@@ -63,7 +63,16 @@ createModuleFromFile name str = createModule (readDecodeTable name str)
 
 createModule :: [(Char,[Word8])] -> [(Char,Char)] -> [(Int,Int)] -> String
 createModule mp ranges rranges = unlines $
-	["module Data.Encoding.GB18030Data where","","import Data.ByteString.Base"]
+	["{-# OPTIONS -fglasgow-exts #-}"
+	,"module Data.Encoding.GB18030Data where"
+	,""
+	,"import Data.ByteString(ByteString)"
+	,"#if __GLASGOW_HASKELL__>=608"
+	,"import Data.ByteString.Unsafe(unsafePackAddressLen)"
+	,"#else"
+	,"import Data.ByteString.Base(unsafePackAddressLen)"
+	,"#endif"
+	,"import System.IO.Unsafe(unsafePerformIO)"]
 	++ (createAddrVars "arr" (map (uncurry $ createAddr mp) ranges))
 	++ (createAddrVars "rarr" (map (uncurry $ createRAddr4 mp) rranges))
 	++ (createAddrVar "rrarr" (createRAddr2 mp))
@@ -76,7 +85,7 @@ createAddrVar :: String -> [Word8] -> [String]
 createAddrVar name cont =
 	[""
 	,name++" :: ByteString"
-	,name++" = unsafePackAddress "++show (length cont)++" \""++addr cont++"\"#"
+	,name++" = unsafePerformIO $ unsafePackAddressLen "++show (length cont)++" \""++addr cont++"\"#"
 	]
 
 createAddr :: [(Char,[Word8])] -> Char -> Char -> [Word8]

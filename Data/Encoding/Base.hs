@@ -20,7 +20,13 @@ import Data.Array(array)
 import Data.ByteString (ByteString,unfoldrN,unfoldr,length,index,unpack)
 import qualified Data.ByteString.Lazy as LBS
 import Data.Encoding.Helper.Template
+
+#if __GLASGOW_HASKELL__>=608
+import Data.ByteString.Unsafe(unsafeIndex)
+#else
 import Data.ByteString.Base(unsafeIndex)
+#endif
+
 import Data.Map (Map,fromList,lookup)
 import Data.Char(chr)
 import Data.Maybe(mapMaybe)

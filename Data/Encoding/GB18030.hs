@@ -13,7 +13,12 @@ import Data.Bits
 import Data.Encoding.Base
 import Data.ByteString (ByteString)
 import qualified Data.ByteString as BS
+
+#if __GLASGOW_HASKELL__>=608
+import Data.ByteString.Unsafe (unsafeIndex)
+#else
 import Data.ByteString.Base (unsafeIndex)
+#endif
 
 import Data.Encoding.GB18030Data
 
