@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP,TemplateHaskell #-}
 module Data.Encoding.ISO885913
 	(ISO885913(..)) where
 

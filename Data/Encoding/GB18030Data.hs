@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts #-}
+{-# LANGUAGE CPP, MagicHash #-}
 module Data.Encoding.GB18030Data where
 
 import Data.ByteString(ByteString)

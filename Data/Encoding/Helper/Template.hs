@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP,TemplateHaskell #-}
 {- This module is used to create arrays from lists in template haskell -}
 
 module Data.Encoding.Helper.Template where

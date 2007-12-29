@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP,TemplateHaskell #-}
 module Data.Encoding.CP1257
 	(CP1257(..)) where
 

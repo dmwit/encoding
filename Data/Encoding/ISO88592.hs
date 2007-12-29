@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP,TemplateHaskell #-}
 {- | Implements ISO\/IEC 8859-2 alias latin-2 encoding. See
      <http://en.wikipedia.org/wiki/ISO/IEC_8859-2> for further informations.
  -}

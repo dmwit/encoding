@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts #-}
+{-# LANGUAGE CPP,TemplateHaskell,DeriveDataTypeable #-}
 
 module Data.Encoding.Base
 	(Encoding(..)

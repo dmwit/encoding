@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP,TemplateHaskell #-}
 {- | Implements ISO 8859-3 encoding, alias latin-3, alias south european
  -}
 module Data.Encoding.ISO88593

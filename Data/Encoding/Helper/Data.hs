@@ -63,7 +63,7 @@ createModuleFromFile name str = createModule (readDecodeTable name str)
 
 createModule :: [(Char,[Word8])] -> [(Char,Char)] -> [(Int,Int)] -> String
 createModule mp ranges rranges = unlines $
-	["{-# OPTIONS -fglasgow-exts #-}"
+	["{-# LANGUAGE CPP,MagicHash #-}"
 	,"module Data.Encoding.GB18030Data where"
 	,""
 	,"import Data.ByteString(ByteString)"

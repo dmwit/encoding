@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {- | GB18030 is a chinese character encoding that is mandatory in china (if you
  -   don\'t implement it, you\'re not allowed to sell your software there).
  -}

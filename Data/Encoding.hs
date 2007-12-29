@@ -1,3 +1,4 @@
+{-# LANGUAGE ExistentialQuantification #-}
 module Data.Encoding
 	(Encoding(..)
 	,EncodingException(..)
