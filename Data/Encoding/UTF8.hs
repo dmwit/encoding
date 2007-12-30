@@ -53,6 +53,7 @@ decodeUTF8 ~(w1:rest1)
 			.|. ((fromIntegral $ w2 .&. 0x3F) `shiftL` 12)
 			.|. ((fromIntegral $ w3 .&. 0x3F) `shiftL`  6)
 			.|. (fromIntegral $ w4 .&. 0x3F),rest4)
+		_ -> throwDyn UnexpectedEnd
 	| otherwise = throwDyn (IllegalCharacter w1)
 
 data UTF8AnalyzeState
