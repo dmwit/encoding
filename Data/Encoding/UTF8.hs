@@ -11,7 +11,10 @@ import Data.Word
 import Prelude hiding (length)
 import Control.Exception
 
-data UTF8 = UTF8 deriving Show
+data UTF8
+	= UTF8
+	| UTF8Strict
+	deriving (Eq,Show)
 
 encodeUTF8 :: Char -> (Word8,EncodeState)
 encodeUTF8 x
@@ -56,8 +59,55 @@ decodeUTF8 ~(w1:rest1)
 		_ -> throwDyn UnexpectedEnd
 	| otherwise = throwDyn (IllegalCharacter w1)
 
+decodeUTF8Strict :: [Word8] -> (Char,[Word8])
+decodeUTF8Strict ~(w1:rest1)
+	| w1<=0x7F = (chr $ fromIntegral w1,rest1)
+	| w1<=0xBF = throwDyn (IllegalCharacter w1)
+	| w1<=0xDF = case rest1 of
+		(w2:rest2)
+			| invalidExtend w2 -> throwDyn (IllegalCharacter w2)
+			| otherwise -> let
+				v1 = w1 .&. 0x1F
+				in if v1 <= 1
+					then throwDyn (IllegalRepresentation [w1,w2])
+					else (chr $ ((fromIntegral v1) `shiftL` 6)
+						.|. (fromIntegral (w2 .&. 0x3F)),rest2)
+		_ -> throwDyn UnexpectedEnd
+	| w1<=0xEF = case rest1 of
+		(w2:w3:rest3)
+			| invalidExtend w2 -> throwDyn (IllegalCharacter w2)
+			| invalidExtend w3 -> throwDyn (IllegalCharacter w3)
+			| otherwise -> let
+				v1 = w1 .&. 0x0F
+				v2 = w2 .&. 0x3F
+				in if v1 == 0 && v2 < 0x20
+					then throwDyn (IllegalRepresentation [w1,w2,w3])
+					else (chr $ ((fromIntegral v1) `shiftL` 12)
+						.|. ((fromIntegral v2) `shiftL` 6)
+						.|. (fromIntegral $ w3 .&. 0x3F),rest3)
+		_ -> throwDyn UnexpectedEnd
+	| w1<=0xF7 = case rest1 of
+		(w2:w3:w4:rest4)
+			| invalidExtend w2 -> throwDyn (IllegalCharacter w2)
+			| invalidExtend w3 -> throwDyn (IllegalCharacter w3)
+			| invalidExtend w4 -> throwDyn (IllegalCharacter w4)
+			| otherwise -> let
+				v1 = w1 .&. 0x07
+				v2 = w2 .&. 0x3F
+				in if v1 == 0 && v2 < 0x10
+					then throwDyn (IllegalRepresentation [w1,w2,w3,w4])
+					else (chr $ ((fromIntegral $ w1 .&. 0x07) `shiftL` 18)
+						.|. ((fromIntegral $ w2 .&. 0x3F) `shiftL` 12)
+						.|. ((fromIntegral $ w3 .&. 0x3F) `shiftL`  6)
+						.|. (fromIntegral $ w4 .&. 0x3F),rest4)
+		_ -> throwDyn UnexpectedEnd
+	| otherwise = throwDyn (IllegalCharacter w1)
+	where
+	invalidExtend wrd = wrd .&. 0xC0 /= 0x80
+
 data UTF8AnalyzeState
 	= Skip !Int
+	| CheckAndSkip !Word8 !Int
 	| Ok
 	| Failed
 	deriving Eq
@@ -66,9 +116,11 @@ instance Encoding UTF8 where
 	encode _ = encodeMultibyte encodeUTF8
 	encodeLazy _ = encodeMultibyteLazy encodeUTF8
 	encodable _ c = ord c <= 0x0010FFFF
-	decode _ = decodeMultibyte decodeUTF8
-	decodeLazy _ = decodeMultibyteLazy decodeUTF8
-	decodable _ str = (foldl' (\st w -> case st of
+	decode UTF8 = decodeMultibyte decodeUTF8
+	decode UTF8Strict = decodeMultibyte decodeUTF8Strict
+	decodeLazy UTF8 = decodeMultibyteLazy decodeUTF8
+	decodeLazy UTF8Strict = decodeMultibyteLazy decodeUTF8Strict
+	decodable UTF8 str = (foldl' (\st w -> case st of
 		Ok	| w<=0x7F -> Ok
 			| w<=0xBF -> Failed
 			| w<=0xDF -> Skip 0
@@ -79,3 +131,24 @@ instance Encoding UTF8 where
 		Skip n -> if w .&. 0xC0 == 0x80
 			then (if n == 0 then Ok else Skip (n-1))
 			else Failed) Ok str) == Ok
+	decodable UTF8Strict str = (foldl' (\st w -> case st of
+		Ok	| w<=0x7F -> Ok
+			| w<=0xBF -> Failed
+			| w<=0xDF -> if w .&. 0x1F <= 1
+				then Failed
+				else Skip 0
+			| w<=0xEF -> if w .&. 0x0F == 0
+				then CheckAndSkip 0x20 1
+				else Skip 1
+			| w<=0xF7 -> if w .&. 0x07 == 0
+				then CheckAndSkip 0x10 2
+				else Skip 2
+			| otherwise -> Failed
+		Failed -> Failed
+		Skip n -> if w .&. 0xC0 == 0x80
+			then (if n == 0 then Ok else Skip (n-1))
+			else Failed
+		CheckAndSkip chk n -> if w .&. 0xC0 == 0x80 && w .&. 0x3F >= chk
+			then (if n == 0 then Ok else Skip (n-1))
+			else Failed
+			) Ok str) == Ok

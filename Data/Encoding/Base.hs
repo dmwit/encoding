@@ -124,7 +124,9 @@ data DecodingException
 	| UnexpectedEnd			-- ^ more bytes were needed to allow a
 					--   successfull decoding.
 	| OutOfRange			-- ^ the decoded value was out of the unicode range
-	deriving (Show,Typeable)
+	| IllegalRepresentation [Word8]	-- ^ The character sequence encodes a
+					--   character, but is illegal.
+	deriving (Eq,Show,Typeable)
 
 decodingArray :: FilePath -> Q Exp
 decodingArray file = do
