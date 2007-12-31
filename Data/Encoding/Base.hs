@@ -114,7 +114,7 @@ data EncodeState
 data EncodingException
 	= HasNoRepresentation Char	-- ^ Thrown if a specific character
 					--   is not representable in an encoding.
-	deriving (Show,Typeable)
+	deriving (Eq,Show,Typeable)
 
 -- | This exception type is thrown whenever something went wrong during the
 --   decoding-process.
