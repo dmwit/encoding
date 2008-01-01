@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP,TemplateHaskell #-}
+{-# LANGUAGE CPP,TemplateHaskell,DeriveDataTypeable #-}
 {- | Implements ISO\/IEC 8859-2 alias latin-2 encoding. See
      <http://en.wikipedia.org/wiki/ISO/IEC_8859-2> for further informations.
  -}
@@ -12,8 +12,9 @@ import Data.Encoding.Base
 import Data.ByteString hiding (length,map)
 import Prelude hiding (lookup,all)
 import Control.Exception
+import Data.Typeable
 
-data ISO88592 = ISO88592 deriving Show
+data ISO88592 = ISO88592 deriving (Eq,Show,Typeable)
 
 enc :: Char -> Word8
 enc c = case lookup c encodeMap of

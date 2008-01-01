@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP,TemplateHaskell #-}
+{-# LANGUAGE CPP,TemplateHaskell,DeriveDataTypeable #-}
 {- | Implements ISO\/IEC 8859-1 alias latin-1 encoding. See
      <http://en.wikipedia.org/wiki/ISO/IEC_8859-1> for further informations.
  -}
@@ -10,8 +10,9 @@ import Data.Encoding.Base
 import Data.Char(ord,chr)
 import Data.Word
 import Control.Exception
+import Data.Typeable
 
-data ISO88591 = ISO88591 deriving Show
+data ISO88591 = ISO88591 deriving (Eq,Show,Typeable)
 
 enc :: Char -> Word8
 enc c = if ord c < 256

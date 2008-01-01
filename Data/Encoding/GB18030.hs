@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP #-}
+{-# LANGUAGE CPP,DeriveDataTypeable #-}
 {- | GB18030 is a chinese character encoding that is mandatory in china (if you
  -   don\'t implement it, you\'re not allowed to sell your software there).
  -}
@@ -14,6 +14,7 @@ import Data.Bits
 import Data.Encoding.Base
 import Data.ByteString (ByteString)
 import qualified Data.ByteString as BS
+import Data.Typeable
 
 #if __GLASGOW_HASKELL__>=608
 import Data.ByteString.Unsafe (unsafeIndex)
@@ -23,7 +24,7 @@ import Data.ByteString.Base (unsafeIndex)
 
 import Data.Encoding.GB18030Data
 
-data GB18030 = GB18030 deriving Show
+data GB18030 = GB18030 deriving (Eq,Show,Typeable)
 
 instance Encoding GB18030 where
 	encode _ = encodeMultibyte encodeGB

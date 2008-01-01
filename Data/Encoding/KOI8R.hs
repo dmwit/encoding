@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Data.Encoding.KOI8R
 	(KOI8R(..)) where
 
@@ -8,10 +9,11 @@ import qualified Data.ByteString.Lazy as Lazy
 import Data.Map hiding (map,(!))
 import Data.Word
 import Prelude hiding (lookup)
+import Data.Typeable
 
 import Data.Encoding.Base
 
-data KOI8R = KOI8R deriving Show
+data KOI8R = KOI8R deriving (Eq,Show,Typeable)
 
 koi8rArr :: UArray Word8 Char
 koi8rArr = listArray (128,255) koi8rList

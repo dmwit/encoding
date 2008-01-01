@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP,TemplateHaskell #-}
+{-# LANGUAGE CPP,TemplateHaskell,DeriveDataTypeable #-}
 module Data.Encoding.ISO88597
 	(ISO88597(..)) where
 
@@ -8,8 +8,9 @@ import Data.Map (Map,lookup,member)
 import Data.Encoding.Base
 import Prelude hiding (lookup)
 import Control.Exception (throwDyn)
+import Data.Typeable
 
-data ISO88597 = ISO88597 deriving Show
+data ISO88597 = ISO88597 deriving (Eq,Show,Typeable)
 
 instance Encoding ISO88597 where
 	encode _ = encodeSinglebyte (\c -> case lookup c encodeMap of

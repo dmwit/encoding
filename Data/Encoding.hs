@@ -12,6 +12,7 @@ module Data.Encoding
 
 import Data.ByteString (ByteString)
 import qualified Data.ByteString.Lazy as Lazy (ByteString)
+import Data.Typeable
 import Data.Encoding.Base
 import Data.Encoding.ASCII
 import Data.Encoding.UTF8
@@ -45,7 +46,8 @@ import Data.Encoding.KOI8R
 import Data.Encoding.GB18030
 
 -- | An untyped encoding. Used in 'System.IO.Encoding.getSystemEncoding'.
-data DynEncoding = forall t. (Encoding t,Show t) => DynEncoding t 
+data DynEncoding = forall t. (Encoding t,Show t,Typeable t,Eq t)
+	=> DynEncoding t 
 
 instance Encoding DynEncoding where
 	encode (DynEncoding enc) = encode enc
@@ -57,6 +59,11 @@ instance Encoding DynEncoding where
 
 instance Show DynEncoding where
 	show (DynEncoding enc) = "DynEncoding "++show enc
+
+instance Eq DynEncoding where
+	(DynEncoding enc1) == (DynEncoding enc2) = case cast enc2 of
+		Nothing -> False
+		Just renc2 -> enc1 == renc2
 
 -- | This decodes a string from one encoding and encodes it into another.
 recode :: (Encoding from,Encoding to) => from -> to -> ByteString -> ByteString

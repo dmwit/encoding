@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP,TemplateHaskell #-}
+{-# LANGUAGE CPP,TemplateHaskell,DeriveDataTypeable #-}
 {- | Implements ISO 8859-3 encoding, alias latin-3, alias south european
  -}
 module Data.Encoding.ISO88593
@@ -10,8 +10,9 @@ import Data.Map (Map,lookup,member)
 import Data.Encoding.Base
 import Prelude hiding (lookup)
 import Control.Exception (throwDyn)
+import Data.Typeable
 
-data ISO88593 = ISO88593 deriving Show
+data ISO88593 = ISO88593 deriving (Eq,Show,Typeable)
 
 enc :: Char -> Word8
 enc c = case lookup c encodeMap of

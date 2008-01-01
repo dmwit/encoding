@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 -- | ASCII (American Standard Code for Information Interchange) is the
 --   \"normal\" computer encoding using the byte values 0-127 to represent
 --   characters. Refer to <http://en.wikipedia.org/wiki/ASCII> for
@@ -13,8 +14,9 @@ import Data.Char (ord)
 import qualified Data.ByteString.Lazy as Lazy
 import Data.Encoding.Base
 import Data.Word
+import Data.Typeable
 
-data ASCII = ASCII deriving Show
+data ASCII = ASCII deriving (Show,Eq,Typeable)
 
 charToASCII :: Char -> Word8
 charToASCII ch = if ch < '\128'

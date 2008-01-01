@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP,TemplateHaskell #-}
+{-# LANGUAGE CPP,TemplateHaskell,DeriveDataTypeable #-}
 module Data.Encoding.ISO885911
 	(ISO885911(..)) where
 
@@ -8,8 +8,9 @@ import Data.Map (Map,lookup,member)
 import Data.Encoding.Base
 import Prelude hiding (lookup)
 import Control.Exception (throwDyn)
+import Data.Typeable
 
-data ISO885911 = ISO885911 deriving Show
+data ISO885911 = ISO885911 deriving (Eq,Show,Typeable)
 
 enc :: Char -> Word8
 enc c = case lookup c encodeMap of

@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 {- | This module implements UTF-16 encoding and decoding as in RFC 2781
  -}
 module Data.Encoding.UTF16
@@ -14,12 +15,13 @@ import qualified Data.ByteString.Lazy as LBS
 import Prelude hiding (length)
 import Control.Exception
 import Data.Dynamic (toDyn)
+import Data.Typeable
 
 data UTF16
 	= UTF16
 	| UTF16BE
 	| UTF16LE
-	deriving (Eq,Show)
+	deriving (Eq,Show,Typeable)
 
 utf16enc :: Bool -> (EncodeState,String) -> Maybe (Word8,(EncodeState,String))
 utf16enc _ (Done,[])   = Nothing

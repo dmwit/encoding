@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Data.Encoding.UTF32
 	(UTF32(..))
 	where
@@ -7,8 +8,9 @@ import Data.Char (ord,chr)
 import Data.Encoding.Base
 import Data.Word
 import Control.Exception (throwDyn)
+import Data.Typeable
 
-data UTF32 = UTF32 deriving Show
+data UTF32 = UTF32 deriving (Eq,Show,Typeable)
 
 instance Encoding UTF32 where
 	encode _ = encodeMultibyte encodeUTF32

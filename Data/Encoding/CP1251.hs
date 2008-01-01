@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP,TemplateHaskell #-}
+{-# LANGUAGE CPP,TemplateHaskell,DeriveDataTypeable #-}
 module Data.Encoding.CP1251
 	(CP1251(..)) where
 
@@ -9,8 +9,9 @@ import Data.Map (Map,lookup,member)
 import Data.Encoding.Base
 import Prelude hiding (lookup,all)
 import Control.Exception (throwDyn)
+import Data.Typeable
 
-data CP1251 = CP1251 deriving Show
+data CP1251 = CP1251 deriving (Eq,Show,Typeable)
 
 instance Encoding CP1251 where
 	encode _ = encodeSinglebyte (\c -> case lookup c encodeMap of
