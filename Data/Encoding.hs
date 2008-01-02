@@ -7,6 +7,7 @@ module Data.Encoding
 	,recodeLazy
 	,DynEncoding()
 	,encodingFromString
+	,encodingFromStringMaybe
 	)
 	where
 
@@ -72,36 +73,43 @@ recode enc_f enc_t bs = encode enc_t (decode enc_f bs)
 recodeLazy :: (Encoding from,Encoding to) => from -> to -> Lazy.ByteString -> Lazy.ByteString
 recodeLazy enc_f enc_t bs = encodeLazy enc_t (decodeLazy enc_f bs)
 
+-- | Like 'encodingFromString' but returns 'Nothing' instead of throwing an error
+encodingFromStringMaybe :: String -> Maybe DynEncoding
+encodingFromStringMaybe "ASCII"		= Just $ DynEncoding ASCII
+encodingFromStringMaybe "UTF-8"		= Just $ DynEncoding UTF8
+encodingFromStringMaybe "UTF-16"	= Just $ DynEncoding UTF16
+encodingFromStringMaybe "UTF-32"	= Just $ DynEncoding UTF32
+encodingFromStringMaybe "KOI8-R"	= Just $ DynEncoding KOI8R
+encodingFromStringMaybe "ISO-8859-1"	= Just $ DynEncoding ISO88591
+encodingFromStringMaybe "ISO-8859-2"	= Just $ DynEncoding ISO88592
+encodingFromStringMaybe "ISO-8859-3"	= Just $ DynEncoding ISO88593
+encodingFromStringMaybe "ISO-8859-4"	= Just $ DynEncoding ISO88594
+encodingFromStringMaybe "ISO-8859-5"	= Just $ DynEncoding ISO88595
+encodingFromStringMaybe "ISO-8859-6"	= Just $ DynEncoding ISO88596
+encodingFromStringMaybe "ISO-8859-7"	= Just $ DynEncoding ISO88597
+encodingFromStringMaybe "ISO-8859-8"	= Just $ DynEncoding ISO88598
+encodingFromStringMaybe "ISO-8859-9"	= Just $ DynEncoding ISO88599
+encodingFromStringMaybe "ISO-8859-10"	= Just $ DynEncoding ISO885910
+encodingFromStringMaybe "ISO-8859-11"	= Just $ DynEncoding ISO885911
+encodingFromStringMaybe "ISO-8859-13"	= Just $ DynEncoding ISO885913
+encodingFromStringMaybe "ISO-8859-14"	= Just $ DynEncoding ISO885914
+encodingFromStringMaybe "ISO-8859-15"	= Just $ DynEncoding ISO885915
+encodingFromStringMaybe "ISO-8859-16"	= Just $ DynEncoding ISO885916
+encodingFromStringMaybe "CP1250"	= Just $ DynEncoding CP1250
+encodingFromStringMaybe "CP1251"	= Just $ DynEncoding CP1251
+encodingFromStringMaybe "CP1252"	= Just $ DynEncoding CP1252
+encodingFromStringMaybe "CP1253"	= Just $ DynEncoding CP1253
+encodingFromStringMaybe "CP1254"	= Just $ DynEncoding CP1254
+encodingFromStringMaybe "CP1255"	= Just $ DynEncoding CP1255
+encodingFromStringMaybe "CP1256"	= Just $ DynEncoding CP1256
+encodingFromStringMaybe "CP1257"	= Just $ DynEncoding CP1257
+encodingFromStringMaybe "CP1258"	= Just $ DynEncoding CP1258
+encodingFromStringMaybe "GB18030"	= Just $ DynEncoding GB18030
+encodingFromStringMaybe _		= Nothing
+
 -- | Takes the name of an encoding and creates a dynamic encoding from it.
 encodingFromString :: String -> DynEncoding
-encodingFromString "ASCII"	= DynEncoding ASCII
-encodingFromString "UTF-8"	= DynEncoding UTF8
-encodingFromString "UTF-16"	= DynEncoding UTF16
-encodingFromString "UTF-32"	= DynEncoding UTF32
-encodingFromString "KOI8-R"	= DynEncoding KOI8R
-encodingFromString "ISO-8859-1"	= DynEncoding ISO88591
-encodingFromString "ISO-8859-2"	= DynEncoding ISO88592
-encodingFromString "ISO-8859-3"	= DynEncoding ISO88593
-encodingFromString "ISO-8859-4"	= DynEncoding ISO88594
-encodingFromString "ISO-8859-5"	= DynEncoding ISO88595
-encodingFromString "ISO-8859-6"	= DynEncoding ISO88596
-encodingFromString "ISO-8859-7"	= DynEncoding ISO88597
-encodingFromString "ISO-8859-8"	= DynEncoding ISO88598
-encodingFromString "ISO-8859-9"	= DynEncoding ISO88599
-encodingFromString "ISO-8859-10"= DynEncoding ISO885910
-encodingFromString "ISO-8859-11"= DynEncoding ISO885911
-encodingFromString "ISO-8859-13"= DynEncoding ISO885913
-encodingFromString "ISO-8859-14"= DynEncoding ISO885914
-encodingFromString "ISO-8859-15"= DynEncoding ISO885915
-encodingFromString "ISO-8859-16"= DynEncoding ISO885916
-encodingFromString "CP1250"	= DynEncoding CP1250
-encodingFromString "CP1251"	= DynEncoding CP1251
-encodingFromString "CP1252"	= DynEncoding CP1252
-encodingFromString "CP1253"	= DynEncoding CP1253
-encodingFromString "CP1254"	= DynEncoding CP1254
-encodingFromString "CP1255"	= DynEncoding CP1255
-encodingFromString "CP1256"	= DynEncoding CP1256
-encodingFromString "CP1257"	= DynEncoding CP1257
-encodingFromString "CP1258"	= DynEncoding CP1258
-encodingFromString "GB18030"	= DynEncoding GB18030
-encodingFromString str		= error $ "Unknown encoding: "++show str
+encodingFromString str = maybe
+	(error $ "Data.Encoding.encodingFromString: Unknown encoding: "++show str)
+	id
+	(encodingFromStringMaybe str)
