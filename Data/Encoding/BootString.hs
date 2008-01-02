@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 {- | This implements BootString en- and decoding, the foundation of Punycode
  -}
 module Data.Encoding.BootString
@@ -8,6 +9,7 @@ import Data.Encoding.Base
 import Data.ByteString.Char8 (pack,unpack)
 import Data.List (unfoldr,partition)
 import Data.Char (ord,chr)
+import Data.Typeable
 
 data BootString = BootString
 	{base :: Int
@@ -18,6 +20,7 @@ data BootString = BootString
 	,init_bias :: Int
 	,init_n    :: Int
 	}
+	deriving (Show,Eq,Typeable)
 
 punycode :: BootString
 punycode = BootString
