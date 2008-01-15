@@ -1,5 +1,6 @@
 {-# LANGUAGE DeriveDataTypeable #-}
-{- | This module implements UTF-16 encoding and decoding as in RFC 2781
+{- | This module implements UTF-16 encoding and decoding as in RFC 2781.
+     See <http://en.wikipedia.org/wiki/UTF-16> for more information.
  -}
 module Data.Encoding.UTF16
 	(UTF16(..)
@@ -18,9 +19,9 @@ import Data.Dynamic (toDyn)
 import Data.Typeable
 
 data UTF16
-	= UTF16
-	| UTF16BE
-	| UTF16LE
+	= UTF16		-- ^ Decodes big and little endian, encodes big endian.
+	| UTF16BE	-- ^ Big endian decoding and encoding, fails if the string isn\'t actually big endian.
+	| UTF16LE	-- ^ Little endian decoding and encoding.
 	deriving (Eq,Show,Typeable)
 
 utf16enc :: Bool -> (EncodeState,String) -> Maybe (Word8,(EncodeState,String))

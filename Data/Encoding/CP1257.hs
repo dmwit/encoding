@@ -1,4 +1,7 @@
 {-# LANGUAGE CPP,TemplateHaskell,DeriveDataTypeable #-}
+{- | This module implements Windows Codepage number 1257 which encodes the estonian, latvian and lithuanian language.
+     See <http://en.wikipedia.org/wiki/CP1257> for more information.
+ -}
 module Data.Encoding.CP1257
 	(CP1257(..)) where
 

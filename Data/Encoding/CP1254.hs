@@ -1,4 +1,7 @@
 {-# LANGUAGE CPP,TemplateHaskell,DeriveDataTypeable #-}
+{- | This module implements Windows Codepage number 1254 which encodes the turkish language.
+     See <http://en.wikipedia.org/wiki/CP1254> for more information.
+ -}
 module Data.Encoding.CP1254
 	(CP1254(..)) where
 

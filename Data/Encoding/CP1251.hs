@@ -1,4 +1,7 @@
 {-# LANGUAGE CPP,TemplateHaskell,DeriveDataTypeable #-}
+{- | This module implements Windows Codepage number 1251 which encodes languages that use the cyrillic alphabet.
+     See <http://en.wikipedia.org/wiki/CP1251> for more information.
+ -}
 module Data.Encoding.CP1251
 	(CP1251(..)) where
 

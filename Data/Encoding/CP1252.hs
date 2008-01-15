@@ -1,4 +1,7 @@
 {-# LANGUAGE CPP,TemplateHaskell,DeriveDataTypeable #-}
+{- | This module implements Windows Codepage number 1252 which is a superset of ISO 8859-1.
+     See <http://en.wikipedia.org/wiki/CP1252> for more information.
+ -}
 module Data.Encoding.CP1252
 	(CP1252(..)) where
 

@@ -1,5 +1,6 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 {- | This module implements UTF-8 encoding and decoding as in RFC 3629.
+     See <http://en.wikipedia.org/wiki/UTF-8> for more information.
  -}
 module Data.Encoding.UTF8
 	(UTF8(..)) where
@@ -14,8 +15,8 @@ import Control.Exception
 import Data.Typeable
 
 data UTF8
-	= UTF8
-	| UTF8Strict
+	= UTF8		-- ^ Very forgiving decoding mechanism, accepts everything that it can make any sense of.
+	| UTF8Strict	-- ^ More strict decoding, doesn\'t accept sequences that have a too long representation and checks bits that aren\'t used in the decoding.
 	deriving (Eq,Show,Typeable)
 
 encodeUTF8 :: Char -> (Word8,EncodeState)

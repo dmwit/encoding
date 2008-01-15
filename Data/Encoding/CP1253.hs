@@ -1,4 +1,7 @@
 {-# LANGUAGE CPP,TemplateHaskell,DeriveDataTypeable #-}
+{- | This module implements Windows Codepage number 1253 which encodes modern greek.
+     See <http://en.wikipedia.org/wiki/CP1253> for more information.
+ -}
 module Data.Encoding.CP1253
 	(CP1253(..)) where
 

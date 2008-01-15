@@ -1,4 +1,7 @@
 {-# LANGUAGE CPP,TemplateHaskell,DeriveDataTypeable #-}
+{- | This module implements Windows Codepage number 1255 which encodes the hebrew language.
+     See <http://en.wikipedia.org/wiki/CP1255> for more information.
+ -}
 module Data.Encoding.CP1255
 	(CP1255(..)) where
 

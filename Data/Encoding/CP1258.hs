@@ -1,4 +1,7 @@
 {-# LANGUAGE CPP,TemplateHaskell,DeriveDataTypeable #-}
+{- | This module implements Windows Codepage number 1258 which encodes the vietnamese language.
+     See <http://en.wikipedia.org/wiki/CP1258> for more information.
+ -}
 module Data.Encoding.CP1258
 	(CP1258(..)) where
 

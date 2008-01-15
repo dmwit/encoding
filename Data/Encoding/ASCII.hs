@@ -2,7 +2,7 @@
 -- | ASCII (American Standard Code for Information Interchange) is the
 --   \"normal\" computer encoding using the byte values 0-127 to represent
 --   characters. Refer to <http://en.wikipedia.org/wiki/ASCII> for
---   more informations.
+--   more information.
 module Data.Encoding.ASCII
 	(ASCII(..)) where
 

@@ -1,4 +1,7 @@
 {-# LANGUAGE CPP,TemplateHaskell,DeriveDataTypeable #-}
+{- | This module implements Windows Codepage number 1250 which encodes languages that use latin script.
+     See <http://en.wikipedia.org/wiki/CP1250> for more information.
+ -}
 module Data.Encoding.CP1250
 	(CP1250(..)) where
 

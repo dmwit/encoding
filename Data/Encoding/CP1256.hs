@@ -1,4 +1,7 @@
 {-# LANGUAGE CPP,TemplateHaskell,DeriveDataTypeable #-}
+{- | This module implements Windows Codepage number 1256 which encodes languages which use the arabic script.
+     See <http://en.wikipedia.org/wiki/CP1256> for more information.
+ -}
 module Data.Encoding.CP1256
 	(CP1256(..)) where
 

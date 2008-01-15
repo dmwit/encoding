@@ -1,4 +1,7 @@
 {-# LANGUAGE DeriveDataTypeable #-}
+{- | This module implements UTF-32 encoding and decoding.
+     See <http://en.wikipedia.org/wiki/UTF-32> for more information.
+ -}
 module Data.Encoding.UTF32
 	(UTF32(..))
 	where

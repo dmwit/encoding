@@ -1,4 +1,7 @@
 {-# LANGUAGE DeriveDataTypeable #-}
+{- | This module implements KOI8-R encoding which covers the russian and bulgarian alphabet.
+     See <http://en.wikipedia.org/wiki/KOI8-R> for more information.
+ -}
 module Data.Encoding.KOI8R
 	(KOI8R(..)) where
 
