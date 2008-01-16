@@ -11,7 +11,7 @@ import Data.Char(ord,chr)
 import Data.Bits
 import Data.Int
 import Data.Word
-import Data.ByteString
+import Data.ByteString as BS
 import qualified Data.ByteString.Lazy as LBS
 import Prelude hiding (length)
 import Control.Exception
@@ -85,7 +85,10 @@ instance Encoding UTF16 where
 		Nothing -> decode' True 0
 		Just big -> decode' big 2
 		where
-		decode' be i = c:decode' be (i+took)
+		l = BS.length str
+		decode' be i = if i>=l
+			then []
+			else c:decode' be (i+took)
 			where
 			(c,took) = mapException (\ex -> case ex of
 				ErrorCall _ -> DynException (toDyn UnexpectedEnd)
@@ -98,7 +101,10 @@ instance Encoding UTF16 where
 		Nothing -> decode' True 0
 		Just big -> decode' big 2
 		where
-		decode' be i = c:decode' be (i+took)
+		l = LBS.length str
+		decode' be i = if i>=l
+			then []
+			else c:decode' be (i+took)
 			where
 			(c,took) = mapException (\ex -> case ex of
 				ErrorCall _ -> DynException (toDyn UnexpectedEnd)
