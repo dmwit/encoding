@@ -1,9 +1,20 @@
 module Test.Tests where
 
 import Data.Encoding
+import Data.Encoding.ASCII
 import Data.Encoding.UTF8
 import Test.Tester
 import Test.HUnit
+
+asciiTests :: Test
+asciiTests = TestList $ map test $
+	[EncodingTest ASCII
+		"Hello, world!"
+		[0x48,0x65,0x6C,0x6C,0x6F,0x2C,0x20,0x77,0x6F,0x72,0x6C,0x64,0x21]
+	,EncodingError ASCII
+		"\x0041\x2262\x0391\x002E"
+		(HasNoRepresentation '\x2262')
+	]
 
 utf8Tests :: Test
 utf8Tests = TestList $ map test $
