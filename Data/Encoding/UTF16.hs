@@ -81,8 +81,8 @@ instance Encoding UTF16 where
 		UTF16 -> Put2 0xFE 0xFF
 		_ -> Done,str)
 	encodable _ c = ord c <= 0x0010FFFF
-	decode _ str = case findByteOrder str of
-		Nothing -> decode' True 0
+	decode bo str = case findByteOrder str of
+		Nothing -> decode' (bo/=UTF16LE) 0
 		Just big -> decode' big 2
 		where
 		l = BS.length str
@@ -97,8 +97,8 @@ instance Encoding UTF16 where
 			s2 = index str (i+1)
 			s3 = index str (i+2)
 			s4 = index str (i+3)
-	decodeLazy _ str = case findByteOrderLazy str of
-		Nothing -> decode' True 0
+	decodeLazy bo str = case findByteOrderLazy str of
+		Nothing -> decode' (bo/=UTF16LE) 0
 		Just big -> decode' big 2
 		where
 		l = LBS.length str
@@ -113,8 +113,8 @@ instance Encoding UTF16 where
 			s2 = LBS.index str (i+1)
 			s3 = LBS.index str (i+2)
 			s4 = LBS.index str (i+3)
-	decodable _ str = case findByteOrder str of
-		Nothing  -> check' True (length str) 0
+	decodable bo str = case findByteOrder str of
+		Nothing  -> check' (bo/=UTF16LE) (length str) 0
 		Just big -> check' big  (length str) 2
 		where
 		check' be m i
