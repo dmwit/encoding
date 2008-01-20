@@ -10,6 +10,7 @@ import Data.ByteString.Char8 (pack,unpack)
 import Data.List (unfoldr,partition)
 import Data.Char (ord,chr)
 import Data.Typeable
+import Control.Exception (throwDyn)
 
 data BootString = BootString
 	{base :: Int
@@ -44,7 +45,7 @@ punyValue c
 	| otherwise = norep
 	where
 	n = ord c
-	norep = error $ "No puny representation for "++show c
+	norep = throwDyn (HasNoRepresentation c)
 
 punyChar :: Int -> Char
 punyChar c
@@ -53,7 +54,7 @@ punyChar c
 	| c < 36 = chr $ 0x30+c-26
 	| otherwise = norep
 	where
-	norep = error $ "No char representation for puny value "++show c
+	norep = throwDyn OutOfRange
 
 threshold :: BootString -> Int -> Int -> Int
 threshold bs bias pos
