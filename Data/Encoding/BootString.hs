@@ -62,7 +62,6 @@ getT bs k bias
 	| k >= bias + (tmax bs) = tmax bs
 	| otherwise             = k-bias
 
-
 adapt :: BootString -> Int -> Int -> Bool -> Int
 adapt bs delta numpoints firsttime = let
 	delta1 = if firsttime
@@ -75,24 +74,29 @@ adapt bs delta numpoints firsttime = let
 	in rk + (((base bs - tmin bs +1) * rd) `div` (rd + skew bs))
 
 decodeValue :: BootString -> Int -> Int -> Int -> Int -> [Int] -> (Int,[Int])
-decodeValue bs bias i k w (x:xs) = let
+decodeValue bs bias i k w (x:xs)
+	| x >= base bs                     = throwDyn OutOfRange
+	| x > (maxBound - i) `div` w       = throwDyn OutOfRange
+	| x <  t                           = (ni,xs)
+	| w > maxBound `div` (base bs - t) = throwDyn OutOfRange
+	| otherwise = decodeValue bs bias ni (k+base bs) (w*(base bs - t)) xs
+	where
 	ni = i + x*w
 	t  = getT bs k bias
-	in if x < t
-		then (ni,xs)
-		else decodeValue bs bias ni (k+base bs) (w*(base bs - t)) xs
 
 decodeValues :: BootString -> Int -> [Int] -> [(Char,Int)]
 decodeValues bs len xs = decodeValues' bs (init_n bs) 0 (init_bias bs) len xs
 
 decodeValues' :: BootString -> Int -> Int -> Int -> Int -> [Int] -> [(Char,Int)]
 decodeValues' bs n i bias len [] = []
-decodeValues' bs n i bias len xs = let
+decodeValues' bs n i bias len xs
+	| dn > maxBound - n = throwDyn OutOfRange
+	| otherwise         = (chr $ nn,nni):decodeValues' bs nn (nni+1)
+		(adapt bs (ni-i) (len+1) (i==0)) (len+1) rst
+	where
 	(ni,rst) = decodeValue bs bias i (base bs) 1 xs
 	(dn,nni) = ni `divMod` (len+1)
 	nn       = n + dn
-	in (chr $ nn,nni):decodeValues' bs nn (nni+1)
-		(adapt bs (ni-i) (len+1) (i==0)) (len+1) rst
 
 insertDeltas :: [(Char,Int)] -> String -> String
 insertDeltas [] str     = str
