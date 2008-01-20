@@ -56,12 +56,12 @@ punyChar c
 	where
 	norep = throwDyn OutOfRange
 
-threshold :: BootString -> Int -> Int -> Int
-threshold bs bias pos
-	| r > tmax bs = tmax bs
-	| r < tmin bs = tmin bs
-	where
-	r = (base bs)*(pos+1)-bias
+getT :: BootString -> Int -> Int -> Int
+getT bs k bias
+	| k <= bias + (tmin bs) = tmin bs
+	| k >= bias + (tmax bs) = tmax bs
+	| otherwise             = k-bias
+
 
 adapt :: BootString -> Int -> Int -> Bool -> Int
 adapt bs delta numpoints firsttime = let
@@ -77,11 +77,7 @@ adapt bs delta numpoints firsttime = let
 decodeValue :: BootString -> Int -> Int -> Int -> Int -> [Int] -> (Int,[Int])
 decodeValue bs bias i k w (x:xs) = let
 	ni = i + x*w
-	t  = if k <= bias + (tmin bs)
-		then tmin bs
-		else (if k >= bias + (tmax bs)
-			then tmax bs
-			else k-bias)
+	t  = getT bs k bias
 	in if x < t
 		then (ni,xs)
 		else decodeValue bs bias ni (k+base bs) (w*(base bs - t)) xs
@@ -109,11 +105,7 @@ punyDecode base ext = insertDeltas (decodeValues punycode (length base) (map pun
 
 encodeValue :: BootString -> Int -> Int -> Int -> Int -> [Int]
 encodeValue bs bias delta n c = unfoldr (\(q,k,out) -> let
-		t = if k <= bias + tmin bs
-			then tmin bs
-			else (if k >= bias + tmax bs
-				then tmax bs
-				else k - bias)
+		t = getT bs k bias
 		(nq,dc) = (q-t) `divMod` (base bs - t)
 		in if out
 			then Nothing
