@@ -44,6 +44,7 @@ import Data.Encoding.CP1256
 import Data.Encoding.CP1257
 import Data.Encoding.CP1258
 import Data.Encoding.KOI8R
+import Data.Encoding.KOI8U
 import Data.Encoding.GB18030
 
 -- | An untyped encoding. Used in 'System.IO.Encoding.getSystemEncoding'.
@@ -80,6 +81,7 @@ encodingFromStringMaybe "UTF-8"		= Just $ DynEncoding UTF8
 encodingFromStringMaybe "UTF-16"	= Just $ DynEncoding UTF16
 encodingFromStringMaybe "UTF-32"	= Just $ DynEncoding UTF32
 encodingFromStringMaybe "KOI8-R"	= Just $ DynEncoding KOI8R
+encodingFromStringMaybe "KOI8-U"	= Just $ DynEncoding KOI8U
 encodingFromStringMaybe "ISO-8859-1"	= Just $ DynEncoding ISO88591
 encodingFromStringMaybe "ISO-8859-2"	= Just $ DynEncoding ISO88592
 encodingFromStringMaybe "ISO-8859-3"	= Just $ DynEncoding ISO88593

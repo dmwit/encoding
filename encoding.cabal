@@ -83,6 +83,7 @@ Library
     Data.Encoding.CP1257
     Data.Encoding.CP1258
     Data.Encoding.KOI8R
+    Data.Encoding.KOI8U
     Data.Encoding.GB18030
     System.IO.Encoding
   Other-Modules:
