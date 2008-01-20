@@ -21,15 +21,15 @@ instance Testable EncodingTest where
 		[TestLabel (show enc ++ " encodable")
 			(TestCase $ (all (encodable enc) src) @=? True)
 		,TestLabel (show enc ++ " encoding (strict)")
-			(TestCase $ (encode enc src) @=? bstr)
+			(TestCase $ bstr @=? (encode enc src))
 		,TestLabel (show enc ++ " encoding (lazy)")
-			(TestCase $ (encodeLazy enc src) @=? lbstr)
+			(TestCase $ lbstr @=? (encodeLazy enc src))
 		,TestLabel (show enc ++ " decodable")
 			(TestCase $ (decodable enc bstr) @=? True)
 		,TestLabel (show enc ++ " decoding (strict)")
-			(TestCase $ (decode enc bstr) @=? src)
+			(TestCase $ src @=? (decode enc bstr))
 		,TestLabel (show enc ++ " decoding (lazy)")
-			(TestCase $ (decodeLazy enc lbstr) @=? src)
+			(TestCase $ src @=? (decodeLazy enc lbstr))
 		]
 		where
 		bstr = BS.pack trg
