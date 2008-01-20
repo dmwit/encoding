@@ -70,7 +70,7 @@ adapt bs delta numpoints firsttime = let
 	delta2 = delta1 + (delta1 `div` numpoints)
 	(rd,rk) = head
 		$ filter ((<=((base bs - tmin bs) * (tmax bs)) `div` 2).fst)
-		$ iterate (\(d,k) -> (d `div` (base bs - tmin bs),k+1)) (delta2,0)
+		$ iterate (\(d,k) -> (d `div` (base bs - tmin bs),k+(base bs))) (delta2,0)
 	in rk + (((base bs - tmin bs +1) * rd) `div` (rd + skew bs))
 
 decodeValue :: BootString -> Int -> Int -> Int -> Int -> [Int] -> (Int,[Int])
