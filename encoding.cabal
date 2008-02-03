@@ -10,6 +10,7 @@ Description:
 Category:	Codec
 Homepage:	http://code.haskell.org/encoding/
 Cabal-Version:	>=1.2
+Build-Type:	Simple
 Extra-Source-Files:
   8859-2.TXT
   8859-3.TXT
