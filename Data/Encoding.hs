@@ -1,4 +1,4 @@
-{-# LANGUAGE ExistentialQuantification #-}
+{-# LANGUAGE ExistentialQuantification,CPP #-}
 module Data.Encoding
 	(Encoding(..)
 	,EncodingException(..)
@@ -6,8 +6,10 @@ module Data.Encoding
 	,recode
 	,recodeLazy
 	,DynEncoding()
+#ifndef USE_HPC
 	,encodingFromString
 	,encodingFromStringMaybe
+#endif
 	)
 	where
 
@@ -15,6 +17,8 @@ import Data.ByteString (ByteString)
 import qualified Data.ByteString.Lazy as Lazy (ByteString)
 import Data.Typeable
 import Data.Encoding.Base
+
+#ifndef USE_HPC
 import Data.Encoding.ASCII
 import Data.Encoding.UTF8
 import Data.Encoding.UTF16
@@ -46,6 +50,7 @@ import Data.Encoding.CP1258
 import Data.Encoding.KOI8R
 import Data.Encoding.KOI8U
 import Data.Encoding.GB18030
+#endif
 
 -- | An untyped encoding. Used in 'System.IO.Encoding.getSystemEncoding'.
 data DynEncoding = forall t. (Encoding t,Show t,Typeable t,Eq t)
@@ -74,6 +79,7 @@ recode enc_f enc_t bs = encode enc_t (decode enc_f bs)
 recodeLazy :: (Encoding from,Encoding to) => from -> to -> Lazy.ByteString -> Lazy.ByteString
 recodeLazy enc_f enc_t bs = encodeLazy enc_t (decodeLazy enc_f bs)
 
+#ifndef USE_HPC
 -- | Like 'encodingFromString' but returns 'Nothing' instead of throwing an error
 encodingFromStringMaybe :: String -> Maybe DynEncoding
 encodingFromStringMaybe "ASCII"		= Just $ DynEncoding ASCII
@@ -115,3 +121,4 @@ encodingFromString str = maybe
 	(error $ "Data.Encoding.encodingFromString: Unknown encoding: "++show str)
 	id
 	(encodingFromStringMaybe str)
+#endif
