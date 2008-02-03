@@ -1,3 +1,11 @@
+Changes from 0.3 to 0.4
+-----------------------
+
+* A new, strict UTF-8 decoder
+* Minor bugs fixed in UTF-16 and BootString
+* Test cases for UTF-8, UTF-16 and BootString
+* Added KOI8U encoding
+
 Changes from 0.2 to 0.3
 -----------------------
 
