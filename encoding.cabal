@@ -45,9 +45,9 @@ Flag splitBase
 
 Library
   if flag(splitBase)
-    Build-Depends:	bytestring, base >= 3, template-haskell, containers, array
+    Build-Depends:	bytestring, base >= 3, template-haskell, containers, array, regex-compat
   else
-    Build-Depends:	base < 3, template-haskell
+    Build-Depends:	base < 3, template-haskell, regex-compat
   Extensions:	TemplateHaskell,CPP,ExistentialQuantification,ForeignFunctionInterface
   C-Sources:	system_encoding.c
   Include-Dirs:	.
