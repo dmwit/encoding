@@ -21,7 +21,7 @@ koi8uArr :: UArray Word8 Char
 koi8uArr = listArray (128,255) koi8uList
 
 koi8uMap :: Map Char Word8
-koi8uMap = fromList (zip koi8uList [0..])
+koi8uMap = fromList (zip koi8uList [128..])
 
 koi8uList :: [Char]
 koi8uList =
