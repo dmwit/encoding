@@ -6,11 +6,15 @@ module Data.Encoding.BootString
 	,punycode) where
 
 import Data.Encoding.Base
-import Data.ByteString.Char8 (pack,unpack)
-import Data.List (unfoldr,partition)
+import Data.Encoding.Exception
+import Data.Encoding.ByteSource
+import Data.Encoding.ByteSink
+import Control.Throws
+import Data.Word
+import Data.List (unfoldr,partition,find)
 import Data.Char (ord,chr)
 import Data.Typeable
-import Control.Exception (throwDyn)
+import Control.Monad (when)
 
 data BootString = BootString
 	{base :: Int
@@ -34,27 +38,27 @@ punycode = BootString
 	,init_n    = 0x80
 	}
 
-punyValue :: Char -> Int
+punyValue :: ByteSource m => Word8 -> m Int
 punyValue c
 	| n <  0x30 = norep
-	| n <= 0x39 = n-0x30+26
+	| n <= 0x39 = return $ n-0x30+26
 	| n <  0x41 = norep
-	| n <= 0x5A = n-0x41
+	| n <= 0x5A = return $ n-0x41
 	| n <  0x61 = norep
-	| n <= 0x7A = n-0x61
+	| n <= 0x7A = return $ n-0x61
 	| otherwise = norep
 	where
-	n = ord c
-	norep = throwDyn (HasNoRepresentation c)
+	n = fromIntegral c
+	norep = throwException (IllegalCharacter c)
 
-punyChar :: Int -> Char
+punyChar :: ByteSink m => Int -> m Word8
 punyChar c
 	| c < 0  = norep
-	| c < 26 = chr $ 0x61+c
-	| c < 36 = chr $ 0x30+c-26
+	| c < 26 = return $ fromIntegral $ 0x61+c
+	| c < 36 = return $ fromIntegral $ 0x30+c-26
 	| otherwise = norep
 	where
-	norep = throwDyn OutOfRange
+	norep = throwException (HasNoRepresentation (chr c))
 
 getT :: BootString -> Int -> Int -> Int
 getT bs k bias
@@ -73,40 +77,46 @@ adapt bs delta numpoints firsttime = let
 		$ iterate (\(d,k) -> (d `div` (base bs - tmin bs),k+(base bs))) (delta2,0)
 	in rk + (((base bs - tmin bs +1) * rd) `div` (rd + skew bs))
 
-decodeValue :: BootString -> Int -> Int -> Int -> Int -> [Int] -> (Int,[Int])
+decodeValue :: ByteSource m => BootString -> Int -> Int -> Int -> Int -> [Int] -> m (Int,[Int])
 decodeValue bs bias i k w (x:xs)
-	| x >= base bs                     = throwDyn OutOfRange
-	| x > (maxBound - i) `div` w       = throwDyn OutOfRange
-	| x <  t                           = (ni,xs)
-	| w > maxBound `div` (base bs - t) = throwDyn OutOfRange
+	| x >= base bs                     = throwException OutOfRange
+	| x > (maxBound - i) `div` w       = throwException OutOfRange
+	| x <  t                           = return (ni,xs)
+	| w > maxBound `div` (base bs - t) = throwException OutOfRange
+        | null xs                          = throwException OutOfRange
 	| otherwise = decodeValue bs bias ni (k+base bs) (w*(base bs - t)) xs
 	where
 	ni = i + x*w
 	t  = getT bs k bias
 
-decodeValues :: BootString -> Int -> [Int] -> [(Char,Int)]
+decodeValues :: ByteSource m => BootString -> Int -> [Int] -> m [(Char,Int)]
 decodeValues bs len xs = decodeValues' bs (init_n bs) 0 (init_bias bs) len xs
 
-decodeValues' :: BootString -> Int -> Int -> Int -> Int -> [Int] -> [(Char,Int)]
-decodeValues' bs n i bias len [] = []
-decodeValues' bs n i bias len xs
-	| dn > maxBound - n = throwDyn OutOfRange
-	| otherwise         = (chr $ nn,nni):decodeValues' bs nn (nni+1)
-		(adapt bs (ni-i) (len+1) (i==0)) (len+1) rst
-	where
-	(ni,rst) = decodeValue bs bias i (base bs) 1 xs
-	(dn,nni) = ni `divMod` (len+1)
-	nn       = n + dn
-
-insertDeltas :: [(Char,Int)] -> String -> String
+decodeValues' :: ByteSource m => BootString -> Int -> Int -> Int -> Int -> [Int] -> m [(Char,Int)]
+decodeValues' bs n i bias len [] = return []
+decodeValues' bs n i bias len xs = do
+  (ni,rst) <- decodeValue bs bias i (base bs) 1 xs
+  let (dn,nni) = ni `divMod` (len+1)
+  let nn = n+dn
+  if dn > maxBound - n
+     then throwException OutOfRange
+     else (do
+            rest <- decodeValues' bs nn (nni+1) (adapt bs (ni-i) (len+1) (i==0)) (len+1) rst
+            return $ (chr $ nn,nni):rest
+          )
+                                   
+insertDeltas :: [(a,Int)] -> [a] -> [a]
 insertDeltas [] str     = str
 insertDeltas ((c,p):xs) str = let
 	(l,r) = splitAt p str
 	in insertDeltas xs (l++[c]++r)
 
-punyDecode :: String -> String -> String
-punyDecode base ext = insertDeltas (decodeValues punycode (length base) (map punyValue ext)) base
-
+punyDecode :: ByteSource m => [Word8] -> [Word8] -> m String
+punyDecode base ext = do
+  pvals <- mapM punyValue ext
+  vals <- decodeValues punycode (length base) pvals
+  return $ insertDeltas vals (map (chr.fromIntegral) base)
+  
 encodeValue :: BootString -> Int -> Int -> Int -> Int -> [Int]
 encodeValue bs bias delta n c = unfoldr (\(q,k,out) -> let
 		t = getT bs k bias
@@ -136,15 +146,39 @@ encodeValues bs b l h bias delta n cps
 	m = minimum (filter (>=n) cps)
 	(ndelta,nh,nbias,outp) = encodeValues' bs b h bias (delta + (m - n)*(h + 1)) m cps
 
+breakLast :: (a -> Bool) -> [a] -> Maybe ([a],[a])
+breakLast p xs = do
+  (bf,af,ind) <- breakLast' 0 Nothing p xs
+  return (bf,af)
+    where
+      breakLast' n r p [] = do
+        v <- r
+        return ([],[],v)
+      breakLast' n r p (x:xs) = let res = if p x
+                                          then breakLast' (n+1) (Just n) p xs
+                                          else breakLast' (n+1) r p xs
+                              in do
+                                (bf,af,v) <- res
+                                return $ if n<v then (x:bf,af,v) else (bf,x:af,v)
+                          
+
 instance Encoding BootString where
-	encode bs str = let
-		(base,nbase) = partition (\c -> ord c < init_n bs) str
-		b = length base
-		res = map punyChar $
-			encodeValues bs b (length str) b (init_bias bs) 0 (init_n bs) (map ord str)
-		in pack $ if null base
-			then res
-			else base++"-"++res
-	decode bs str = case break (=='-') (unpack str) of
-		(base,'-':nbase) -> punyDecode base nbase
-		(nbase,"") -> punyDecode "" nbase
+    encodeChar _ c = error "Data.Encoding.BootString.encodeChar: Please use 'encode' for encoding BootStrings"
+    decodeChar _ = error "Data.Encoding.BootString.decodeChar: Please use 'decode' for decoding BootStrings"
+    encode bs str = let (base,nbase) = partition (\c -> ord c < init_n bs) str
+	                b = length base
+                    in do
+                      res <- mapM punyChar $ encodeValues bs b (length str) b (init_bias bs) 0 (init_n bs) (map ord str)
+                      when (not $ null base) $ do
+                               mapM_ (pushWord8.fromIntegral.ord) base
+                               pushWord8 (fromIntegral $ ord '-')
+                      mapM_ pushWord8 res
+    decode bs = do
+      wrds <- untilM sourceEmpty fetchWord8
+      let m = fromIntegral $ ord '-'
+      case breakLast (==m) wrds of
+        Just ([],_) -> throwException (IllegalCharacter m)
+	Just (base,_:nbase) -> case find (\w -> fromIntegral w > init_n bs) base of
+                                Nothing -> punyDecode base nbase
+                                Just ww -> throwException (IllegalCharacter ww)
+	Nothing -> punyDecode [] wrds

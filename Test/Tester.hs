@@ -4,9 +4,10 @@ module Test.Tester where
 import Data.Encoding
 import Test.HUnit
 import Data.Word
+import Data.Char
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Lazy as LBS
-import Control.Exception (catchDyn,evaluate)
+import Test.QuickCheck hiding (Testable)
 
 data EncodingTest
 	= forall enc. (Encoding enc,Show enc) =>
@@ -17,52 +18,60 @@ data EncodingTest
 		EncodingError enc String EncodingException
 
 instance Testable EncodingTest where
-	test (EncodingTest enc src trg) = TestList
-		[TestLabel (show enc ++ " encodable")
-			(TestCase $ (all (encodable enc) src) @=? True)
-		,TestLabel (show enc ++ " encoding (strict)")
-			(TestCase $ bstr @=? (encode enc src))
-		,TestLabel (show enc ++ " encoding (lazy)")
-			(TestCase $ lbstr @=? (encodeLazy enc src))
-		,TestLabel (show enc ++ " decodable")
-			(TestCase $ (decodable enc bstr) @=? True)
-		,TestLabel (show enc ++ " decoding (strict)")
-			(TestCase $ src @=? (decode enc bstr))
-		,TestLabel (show enc ++ " decoding (lazy)")
-			(TestCase $ src @=? (decodeLazy enc lbstr))
-		]
-		where
-		bstr = BS.pack trg
-		lbstr = LBS.pack trg
-	test (DecodingError enc trg what) = TestList
-		[TestLabel (show what++" not decodable in "++show enc) $
-			TestCase $ assert $ not $ decodable enc (BS.pack trg)
-		,TestLabel (show enc ++ " decoding error (strict)") $ TestCase $ 
-			catchDyn (do
-				mapM_ evaluate (decode enc (BS.pack trg))
-				assertFailure "No exception thrown"
-				)
-				(\exc -> exc @=? what)
-		,TestLabel (show enc ++ " decoding error (lazy)") $ TestCase $ 
-			catchDyn (do
-				mapM_ evaluate (decodeLazy enc (LBS.pack trg))
-				assertFailure "No exception thrown"
-				)
-				(\exc -> exc @=? what)
-		]
-	test (EncodingError enc src what) = TestList
-		[TestLabel (show src ++ " not encodable in " ++ show enc) $
-			TestCase $ assert $ not $ all (encodable enc) src
-		,TestLabel (show enc ++ " encoding error (strict)") $ TestCase $
-			catchDyn (do
-				evaluate (encode enc src)
-				assertFailure "No exception thrown"
-				)
-				(\exc -> exc @=? what)
-		,TestLabel (show enc ++ " encoding error (lazy)") $ TestCase $
-			catchDyn (do
-				evaluate (encodeLazy enc src)
-				assertFailure "No exception thrown"
-				)
-				(\exc -> exc @=? what)
-		]
+    test (EncodingTest enc src trg)
+        = TestList
+          [TestLabel (show enc ++ " encoding")
+           (TestCase $ encodeStrictByteStringExplicit enc src
+                         @?= Right (BS.pack trg))
+          ,TestLabel (show enc ++ " decoding")
+           (TestCase $ decodeStrictByteStringExplicit enc (BS.pack trg)
+                         @=? Right src)
+          ]
+    test (DecodingError enc src ex)
+        = TestLabel (show enc ++ " decoding error")
+          (TestCase $ decodeStrictByteStringExplicit enc (BS.pack src) @=? Left ex)
+
+
+charGen :: Gen Char
+charGen = let
+    ascii = choose (0x00,0x7F) >>= return.chr
+    oneByte = choose (0x80,0xFF) >>= return.chr
+    twoByte = choose (0x0100,0xFFFF) >>= return.chr
+    threeByte = choose (0x010000,0x10FFFF) >>= return.chr
+    in frequency [(40,ascii),(30,oneByte),(20,twoByte),(10,threeByte)]
+
+instance Arbitrary Char where
+    arbitrary = charGen
+    coarbitrary x = id
+
+instance Arbitrary Word8 where
+    arbitrary = choose (0x00,0xFF::Int) >>= return.fromIntegral
+    coarbitrary x = id
+
+quickCheckEncoding :: Encoding enc => enc -> IO ()
+quickCheckEncoding e = do
+  quickCheck (encodingIdentity e)
+  quickCheck (decodingIdentity e)
+
+encodingIdentity :: Encoding enc => enc -> String -> Property
+encodingIdentity e str
+    = trivial (null str) 
+      $ case encoded of
+          Left err -> trivial True True
+          Right res -> case decodeStrictByteStringExplicit e res of
+                        Left err -> property False
+                        Right res' -> property (str==res')
+    where
+      encoded = encodeStrictByteStringExplicit e str
+
+decodingIdentity :: Encoding enc => enc -> [Word8] -> Property
+decodingIdentity e wrd
+    = trivial (null wrd)
+      $ case decoded of
+          Left err -> trivial True True
+          Right res -> case encodeStrictByteStringExplicit e res of
+                        Left err -> property False
+                        Right res' -> property (bstr==res')
+    where
+      bstr = BS.pack wrd
+      decoded = decodeStrictByteStringExplicit e bstr

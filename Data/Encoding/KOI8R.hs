@@ -5,16 +5,18 @@
 module Data.Encoding.KOI8R
 	(KOI8R(..)) where
 
-import Control.Exception (throwDyn)
+import Control.Throws
 import Data.Array.Unboxed
 import Data.Char (ord,chr)
-import qualified Data.ByteString.Lazy as Lazy
 import Data.Map hiding (map,(!))
 import Data.Word
 import Prelude hiding (lookup)
 import Data.Typeable
 
 import Data.Encoding.Base
+import Data.Encoding.ByteSource
+import Data.Encoding.ByteSink
+import Data.Encoding.Exception
 
 data KOI8R = KOI8R deriving (Eq,Show,Typeable)
 
@@ -44,22 +46,14 @@ koi8rList =
 	,'\x042c','\x042b','\x0417','\x0428','\x042d','\x0429','\x0427','\x042a'
 	]
 
-koi8rDecode :: Word8 -> Char
-koi8rDecode ch
-	| ch < 128 = chr $ fromIntegral ch
-	| otherwise = koi8rArr!ch
-
-koi8rEncode :: Char -> Word8
-koi8rEncode ch
-	| ch < '\128' = fromIntegral $ ord ch
-	| otherwise   = case lookup ch koi8rMap of
-		Just w -> w
-		Nothing -> throwDyn (HasNoRepresentation ch)
-
 instance Encoding KOI8R where
-	encode _ = encodeSinglebyte koi8rEncode
-	encodeLazy _ = encodeSinglebyteLazy koi8rEncode
-	encodable _ c = (c < '\128') || (member c koi8rMap)
-	decode _ = decodeSinglebyte koi8rDecode
-	decodeLazy _ str = concatMap (decodeSinglebyte koi8rDecode) (Lazy.toChunks str)
-	decodable _ = const True
+    decodeChar _ = do
+      w <- fetchWord8
+      if w < 128
+        then return $ chr $ fromIntegral w
+        else return $ koi8rArr!w
+    encodeChar _ ch
+	| ch < '\128' = pushWord8 $ fromIntegral $ ord ch
+	| otherwise   = case lookup ch koi8rMap of
+		Just w -> pushWord8 w
+		Nothing -> throwException (HasNoRepresentation ch)

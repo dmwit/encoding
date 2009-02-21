@@ -1,24 +1,45 @@
-{-# LANGUAGE ExistentialQuantification,CPP #-}
+{-# LANGUAGE FlexibleContexts,ExistentialQuantification #-}
 module Data.Encoding
-	(Encoding(..)
-	,EncodingException(..)
-	,DecodingException(..)
-	,recode
-	,recodeLazy
-	,DynEncoding()
-#ifndef USE_HPC
-	,encodingFromString
-	,encodingFromStringMaybe
-#endif
-	)
-	where
+    (module Data.Encoding.Exception
+    ,module Data.Encoding.ByteSource
+    ,module Data.Encoding.ByteSink
+    ,Encoding(..)
+    ,DynEncoding
+    ,recode
+    ,encodeString
+    ,encodeStringExplicit
+    ,decodeString
+    ,decodeStringExplicit
+    ,encodeLazyByteString
+    ,encodeLazyByteStringExplicit
+    ,decodeLazyByteString
+    ,decodeLazyByteStringExplicit
+    ,encodeStrictByteString
+    ,encodeStrictByteStringExplicit
+    ,decodeStrictByteString
+    ,decodeStrictByteStringExplicit
+    ,encodingFromString
+    )
+    where
 
-import Data.ByteString (ByteString)
-import qualified Data.ByteString.Lazy as Lazy (ByteString)
-import Data.Typeable
 import Data.Encoding.Base
+import Data.Encoding.ByteSource
+import Data.Encoding.ByteSink
+import Data.Encoding.Exception
 
-#ifndef USE_HPC
+import Data.Sequence
+import Data.Foldable(toList)
+import Data.Char
+
+import Control.Monad.State
+import Control.Monad.Identity
+import Control.Monad.Error.Class
+import Data.Binary.Put
+import Data.Binary.Get
+
+import qualified Data.ByteString as BS
+import qualified Data.ByteString.Lazy as LBS
+
 import Data.Encoding.ASCII
 import Data.Encoding.UTF8
 import Data.Encoding.UTF16
@@ -52,36 +73,61 @@ import Data.Encoding.KOI8U
 import Data.Encoding.GB18030
 import Data.Char
 import Text.Regex
-#endif
 
--- | An untyped encoding. Used in 'System.IO.Encoding.getSystemEncoding'.
-data DynEncoding = forall t. (Encoding t,Show t,Typeable t,Eq t)
-	=> DynEncoding t 
+data DynEncoding = forall enc. Encoding enc => DynEncoding enc
 
 instance Encoding DynEncoding where
-	encode (DynEncoding enc) = encode enc
-	encodeLazy (DynEncoding enc) = encodeLazy enc
-	encodable (DynEncoding enc) = encodable enc
-	decode (DynEncoding enc) = decode enc
-	decodeLazy (DynEncoding enc) = decodeLazy enc
-	decodable (DynEncoding enc) = decodable enc
+    decodeChar (DynEncoding e) = decodeChar e
+    encodeChar (DynEncoding e) = encodeChar e
+    decode (DynEncoding e) = decode e
+    encode (DynEncoding e) = encode e
 
-instance Show DynEncoding where
-	show (DynEncoding enc) = "DynEncoding "++show enc
+recode :: (Encoding enc1,Encoding enc2,ByteSource m,ByteSink m) => enc1 -> enc2 -> m ()
+recode e1 e2 = untilM_ sourceEmpty (decodeChar e1 >>= encodeChar e2)
 
-instance Eq DynEncoding where
-	(DynEncoding enc1) == (DynEncoding enc2) = case cast enc2 of
-		Nothing -> False
-		Just renc2 -> enc1 == renc2
+encodeString :: Encoding enc => enc -> String -> String
+encodeString e str = toList $ viewl $ execState (encode e str) empty
 
--- | This decodes a string from one encoding and encodes it into another.
-recode :: (Encoding from,Encoding to) => from -> to -> ByteString -> ByteString
-recode enc_f enc_t bs = encode enc_t (decode enc_f bs)
+encodeStringExplicit :: Encoding enc => enc -> String -> Either EncodingException String
+encodeStringExplicit e str = execStateT (encode e str) empty >>= return.toList.viewl
 
-recodeLazy :: (Encoding from,Encoding to) => from -> to -> Lazy.ByteString -> Lazy.ByteString
-recodeLazy enc_f enc_t bs = encodeLazy enc_t (decodeLazy enc_f bs)
+decodeString :: Encoding enc => enc -> String -> String
+decodeString e str = evalState (decode e) str
 
-#ifndef USE_HPC
+decodeStringExplicit :: Encoding enc => enc -> String -> Either DecodingException String
+decodeStringExplicit e str = evalStateT (decode e) str
+
+encodeLazyByteString :: Encoding enc => enc -> String -> LBS.ByteString
+encodeLazyByteString e str = runPut $ encode e str
+
+encodeLazyByteStringExplicit :: Encoding enc => enc -> String -> Either EncodingException LBS.ByteString
+encodeLazyByteStringExplicit e str = let PutME g = encode e str
+                                     in case g of
+                                          Left err -> Left err
+                                          Right (p,()) -> Right $ runPut p
+
+decodeLazyByteString :: Encoding enc => enc -> LBS.ByteString -> String
+decodeLazyByteString e str = runGet (decode e) str
+
+decodeLazyByteStringExplicit :: Encoding enc => enc -> LBS.ByteString -> Either DecodingException String
+decodeLazyByteStringExplicit e str = evalStateT (decode e) str
+
+encodeStrictByteString :: Encoding enc => enc -> String -> BS.ByteString
+encodeStrictByteString e str = snd $ createStrict $ encode e str
+
+encodeStrictByteStringExplicit :: Encoding enc => enc -> String -> Either EncodingException BS.ByteString
+encodeStrictByteStringExplicit e str = let StrictSinkE g = encode e str
+                                           (r,bstr) = createStrict g
+                                       in case r of
+                                            Left err -> Left err
+                                            Right _  -> Right bstr
+
+decodeStrictByteString :: Encoding enc => enc -> BS.ByteString -> String
+decodeStrictByteString e str = evalState (decode e) str
+
+decodeStrictByteStringExplicit :: Encoding enc => enc -> BS.ByteString -> Either DecodingException String
+decodeStrictByteStringExplicit e str = evalStateT (decode e) str
+
 -- | Like 'encodingFromString' but returns 'Nothing' instead of throwing an error
 encodingFromStringMaybe :: String -> Maybe DynEncoding
 encodingFromStringMaybe codeName = case (normalizeEncoding codeName) of
@@ -266,12 +312,9 @@ encodingFromStringMaybe codeName = case (normalizeEncoding codeName) of
     normalizeEncoding s = map toLower $ subRegex sep s "_"
     sep = mkRegex "[^0-9A-Za-z]+"
 
-
-
 -- | Takes the name of an encoding and creates a dynamic encoding from it.
 encodingFromString :: String -> DynEncoding
 encodingFromString str = maybe
 	(error $ "Data.Encoding.encodingFromString: Unknown encoding: "++show str)
 	id
 	(encodingFromStringMaybe str)
-#endif
