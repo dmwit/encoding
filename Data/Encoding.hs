@@ -71,6 +71,7 @@ import Data.Encoding.CP1258
 import Data.Encoding.KOI8R
 import Data.Encoding.KOI8U
 import Data.Encoding.GB18030
+import Data.Encoding.MacOSRoman
 import Data.Char
 import Text.Regex
 
@@ -306,6 +307,8 @@ encodingFromStringMaybe codeName = case (normalizeEncoding codeName) of
     -- GB18030
     "gb18030"            -> Just $ DynEncoding GB18030
     "gb18030_2000"       -> Just $ DynEncoding GB18030
+    -- MacOSRoman
+    "macintosh"          -> Just $ DynEncoding MacOSRoman
     -- defaults to nothing
     _                    -> Nothing
   where

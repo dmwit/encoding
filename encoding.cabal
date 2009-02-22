@@ -59,4 +59,5 @@ Library
     Data.Encoding.GB18030
     Data.Encoding.Helper.Template
     Data.Encoding.BootString
+    Data.Encoding.MacOSRoman
     System.IO.Encoding
