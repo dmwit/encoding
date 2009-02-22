@@ -58,7 +58,7 @@ readTranslation file = do
 		[] -> Nothing
 		('#':xs) -> Nothing
 		_ -> case words ln of
-			(src:"#UNDEFINED":_) -> Just (read src,Nothing) -- XXX: Find a better way to handle this
+			(src:"#UNDEFINED":_) -> Just (read src,Nothing)
 			(src:trg:_) -> Just (read src,Just $ chr $ read trg)
 			_ -> Nothing
 			) (lines cont)
