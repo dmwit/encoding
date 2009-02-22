@@ -60,4 +60,5 @@ Library
     Data.Encoding.Helper.Template
     Data.Encoding.BootString
     Data.Encoding.MacOSRoman
+    Data.Encoding.JISX0201
     System.IO.Encoding
