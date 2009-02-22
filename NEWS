@@ -1,3 +1,11 @@
+
+Changes from 0.4 to 0.5
+-----------------------
+
+* Complete rewrite of the Encoding class to allow for
+  1. On-the-fly changing of the encoding while en-/decoding
+  2. Ability to en-/decode from/to any data structure
+
 Changes from 0.3 to 0.4
 -----------------------
 
