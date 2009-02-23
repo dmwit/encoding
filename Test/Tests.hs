@@ -17,6 +17,7 @@ import Data.Encoding.ISO885910
 import Data.Encoding.ISO885911
 import Data.Encoding.ISO885913
 import Data.Encoding.ISO885914
+import Data.Encoding.JISX0208
 import Data.Encoding.BootString
 import Test.HUnit
 import Test.QuickCheck hiding (test)
@@ -228,3 +229,15 @@ punycodeTests = TestList $ map test $
 		"foobarbaz"-}
 	]
 	where punyTest str outp = EncodingTest punycode str (map (fromIntegral.ord) outp)
+
+isoTests :: Test
+isoTests = TestList $ map test $
+           [EncodingTest ISO88592 "\x104\x2D8\x141\xA4\x13D\x15A\xA7\xA8\x160\x15E\x164\x179\xAD\x17D\x17B\xB0\x105\x2DB\x142\xB4\x13E\x15B\x2C7\xB8\x161\x15F"
+            [0xA1..0xBA]
+           ]
+
+jisTests :: Test
+jisTests = TestList $ map test $
+           [EncodingTest JISX0208 "\x4E9C"
+            [0x30,0x21]
+           ]

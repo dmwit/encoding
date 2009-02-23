@@ -61,4 +61,5 @@ Library
     Data.Encoding.BootString
     Data.Encoding.MacOSRoman
     Data.Encoding.JISX0201
+    Data.Encoding.JISX0208
     System.IO.Encoding

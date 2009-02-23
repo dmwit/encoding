@@ -73,6 +73,7 @@ import Data.Encoding.KOI8U
 import Data.Encoding.GB18030
 import Data.Encoding.MacOSRoman
 import Data.Encoding.JISX0201
+import Data.Encoding.JISX0208
 import Data.Char
 import Text.Regex
 
@@ -312,6 +313,8 @@ encodingFromStringMaybe codeName = case (normalizeEncoding codeName) of
     "macintosh"          -> Just $ DynEncoding MacOSRoman
     -- JIS X 0201
     "jis_x_0201"         -> Just $ DynEncoding JISX0201
+    -- JIS x 0208
+    "jis_x_0208"         -> Just $ DynEncoding JISX0208
     -- defaults to nothing
     _                    -> Nothing
   where
