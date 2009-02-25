@@ -6,7 +6,7 @@ import Data.Bits
 import Data.Char
 import Data.Maybe (mapMaybe)
 import Data.Map as Map (fromList,lookup)
-import Data.Array
+import Data.Array.Unboxed
 import Data.Typeable
 import Language.Haskell.TH
 
@@ -27,10 +27,11 @@ makeJISInstance name file = do
 encodingInstance :: Name -> Name -> Name -> String -> Exp -> Exp -> [Dec]
 encodingInstance enc dec able name mp arr
     = [ DataD [] rname [] [NormalC rname []] [''Show,''Eq,''Typeable]
+      , ValD (VarP rmp) (NormalB mp) []
       , InstanceD [] (AppT (ConT ''Encoding) (ConT rname))
                       [FunD 'encodeChar
                        [Clause [WildP] (NormalB $ AppE (VarE enc) (VarE rmp))
-                        [ValD (VarP rmp) (NormalB mp) []]
+                        []
                        ]
                       ,FunD 'decodeChar
                        [Clause [WildP] (NormalB $ AppE (VarE dec) (VarE rarr))
@@ -38,14 +39,14 @@ encodingInstance enc dec able name mp arr
                        ]
                       ,FunD 'encodeable
                        [Clause [WildP] (NormalB $ AppE (VarE able) (VarE rmp))
-                        [ValD (VarP rmp) (NormalB mp) []]
+                        []
                        ]
                       ]
       ]
     where
       rname = mkName name
       rarr = mkName "arr"
-      rmp = mkName "mp"
+      rmp = mkName ("decoding_map_"++name)
 
 createCharArray :: [(Integer,Maybe Char)] -> Integer -> Integer -> Q Exp
 createCharArray lst f t = createArray (map (\(x,y) ->
@@ -64,8 +65,8 @@ integerExp :: Integer -> Exp
 integerExp i = LitE $ IntegerL i
 
 mbCharToExp :: Maybe Char -> Exp
-mbCharToExp Nothing = ConE 'Nothing
-mbCharToExp (Just c) = AppE (ConE 'Just) (LitE $ CharL c)
+mbCharToExp Nothing = LitE (IntegerL (-1))
+mbCharToExp (Just c) = LitE (IntegerL $ fromIntegral $ ord c)
 
 createArray :: [(Exp,Exp)] -> Exp -> Exp -> Q Exp
 createArray lst from to

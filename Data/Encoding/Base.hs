@@ -6,7 +6,7 @@ import Data.Encoding.ByteSource
 import Data.Encoding.ByteSink
 
 import Control.Throws
-import Data.Array as Array
+import Data.Array.Unboxed as Array
 import Data.Map as Map hiding ((!))
 import Data.Word
 import Data.Char
@@ -64,17 +64,19 @@ encodeWithMap2 mp c = case Map.lookup c mp of
 encodeableWithMap :: Map Char a -> Char -> Bool
 encodeableWithMap = flip Map.member
 
-decodeWithArray :: ByteSource m => Array Word8 (Maybe Char) -> m Char
+decodeWithArray :: ByteSource m => UArray Word8 Int -> m Char
 decodeWithArray arr = do
   w <- fetchWord8
-  case arr!w of
-    Nothing -> throwException $ IllegalCharacter w
-    Just c -> return c
+  let res = arr!w
+  if res < 0
+    then throwException $ IllegalCharacter w
+    else return $ chr res
 
-decodeWithArray2 :: ByteSource m => Array (Word8,Word8) (Maybe Char) -> m Char
+decodeWithArray2 :: ByteSource m => UArray (Word8,Word8) Int -> m Char
 decodeWithArray2 arr = do
   w1 <- fetchWord8
   w2 <- fetchWord8
-  case arr!(w1,w2) of
-    Nothing -> throwException $ IllegalCharacter w1
-    Just c -> return c
+  let res = arr!(w1,w2)
+  if res < 0
+    then throwException $ IllegalCharacter w1
+    else return $ chr res
