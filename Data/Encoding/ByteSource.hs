@@ -19,6 +19,7 @@ import System.IO
 class (Monad m,Throws DecodingException m) => ByteSource m where
     sourceEmpty :: m Bool
     fetchWord8 :: m Word8
+    fetchAhead :: m a -> m a
     fetchWord16be :: m Word16
     fetchWord16be = do
       w1 <- fetchWord8
@@ -94,6 +95,7 @@ instance Throws DecodingException Get where
 instance ByteSource Get where
     sourceEmpty = isEmpty
     fetchWord8 = getWord8
+    fetchAhead = lookAhead
     fetchWord16be = getWord16be
     fetchWord16le = getWord16le
     fetchWord32be = getWord32be
@@ -113,6 +115,11 @@ instance ByteSource (State [Char]) where
         c:cs -> do
           put cs
           return (fromIntegral $ ord c)
+    fetchAhead act = do
+      chs <- get
+      res <- act
+      put chs
+      return res
 
 instance Monad (Either DecodingException) where
     return = Right
@@ -128,6 +135,11 @@ instance ByteSource (StateT [Char] (Either DecodingException)) where
         c:cs -> do
           put cs
           return (fromIntegral $ ord c)
+    fetchAhead act = do
+      chs <- get
+      res <- act
+      put chs
+      return res
 
 instance Throws DecodingException (State BS.ByteString) where
     throwException = throw
@@ -137,18 +149,33 @@ instance ByteSource (State BS.ByteString) where
     fetchWord8 = State (\str -> case BS.uncons str of
                                   Nothing -> throw UnexpectedEnd
                                   Just (c,cs) -> (c,cs))
+    fetchAhead act = do
+      str <- get
+      res <- act
+      put str
+      return res
 
 instance ByteSource (StateT BS.ByteString (Either DecodingException)) where
     sourceEmpty = gets BS.null
     fetchWord8 = StateT (\str -> case BS.uncons str of
                                   Nothing -> Left UnexpectedEnd
                                   Just ns -> Right ns)
+    fetchAhead act = do
+      chs <- get
+      res <- act
+      put chs
+      return res
 
 instance ByteSource (StateT LBS.ByteString (Either DecodingException)) where
     sourceEmpty = gets LBS.null
     fetchWord8 = StateT (\str -> case LBS.uncons str of
                                   Nothing -> Left UnexpectedEnd
                                   Just ns -> Right ns)
+    fetchAhead act = do
+      chs <- get
+      res <- act
+      put chs
+      return res
 
 instance ByteSource (ReaderT Handle IO) where
     sourceEmpty = do
@@ -159,3 +186,9 @@ instance ByteSource (ReaderT Handle IO) where
       liftIO $ do
         ch <- hGetChar h
         return (fromIntegral $ ord ch)
+    fetchAhead act = do
+      h <- ask
+      pos <- liftIO $ hGetPosn h
+      res <- act
+      liftIO $ hSetPosn pos
+      return res
