@@ -3,8 +3,14 @@ Changes from 0.4 to 0.5
 -----------------------
 
 * Complete rewrite of the Encoding class to allow for
-  1. On-the-fly changing of the encoding while en-/decoding
-  2. Ability to en-/decode from/to any data structure
+  - On-the-fly changing of the encoding while en-/decoding
+  - Ability to en-/decode from/to any data structure
+* A general module to help specify encodings based on ISO 2022
+* New encodings:
+  - JIS X 0201
+  - JIS X 0208
+  - ISO 2022-JP
+* More test cases
 
 Changes from 0.3 to 0.4
 -----------------------
