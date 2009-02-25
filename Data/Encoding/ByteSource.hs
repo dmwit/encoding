@@ -131,7 +131,7 @@ instance ByteSource (StateT [Char] (Either DecodingException)) where
     fetchWord8 = do
       chs <- get
       case chs of
-        [] -> throwException UnexpectedEnd --handleDecodingError UnexpectedEnd
+        [] -> throwException UnexpectedEnd
         c:cs -> do
           put cs
           return (fromIntegral $ ord c)
