@@ -74,6 +74,7 @@ import Data.Encoding.GB18030
 import Data.Encoding.MacOSRoman
 import Data.Encoding.JISX0201
 import Data.Encoding.JISX0208
+import Data.Encoding.ISO2022JP
 import Data.Char
 import Text.Regex
 
@@ -307,6 +308,8 @@ encodingFromStringMaybe codeName = case (normalizeEncoding codeName) of
     "jis_x_0201"         -> Just $ DynEncoding JISX0201
     -- JIS x 0208
     "jis_x_0208"         -> Just $ DynEncoding JISX0208
+    -- ISO 2022-JP
+    "iso_2022_jp"        -> Just $ DynEncoding ISO2022JP
     -- defaults to nothing
     _                    -> Nothing
   where
