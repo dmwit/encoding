@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell,DeriveDataTypeable #-}
 module Data.Encoding.CP1251 where
 
 import Data.Encoding.Helper.Template (makeISOInstance)

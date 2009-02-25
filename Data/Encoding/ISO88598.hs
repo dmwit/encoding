@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell,DeriveDataTypeable #-}
 module Data.Encoding.ISO88598 where
 
 import Data.Encoding.Helper.Template (makeISOInstance)

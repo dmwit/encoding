@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleContexts,ExistentialQuantification #-}
+{-# LANGUAGE FlexibleContexts #-}
 module Data.Encoding
     (module Data.Encoding.Exception
     ,module Data.Encoding.ByteSource
@@ -76,14 +76,6 @@ import Data.Encoding.JISX0201
 import Data.Encoding.JISX0208
 import Data.Char
 import Text.Regex
-
-data DynEncoding = forall enc. Encoding enc => DynEncoding enc
-
-instance Encoding DynEncoding where
-    decodeChar (DynEncoding e) = decodeChar e
-    encodeChar (DynEncoding e) = encodeChar e
-    decode (DynEncoding e) = decode e
-    encode (DynEncoding e) = encode e
 
 recode :: (Encoding enc1,Encoding enc2,ByteSource m,ByteSink m) => enc1 -> enc2 -> m ()
 recode e1 e2 = untilM_ sourceEmpty (decodeChar e1 >>= encodeChar e2)

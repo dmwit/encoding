@@ -1,3 +1,4 @@
+{-# LANGUAGE ExistentialQuantification #-}
 module Data.Encoding.Base where
 
 import Data.Encoding.Exception
@@ -9,6 +10,7 @@ import Data.Array as Array
 import Data.Map as Map hiding ((!))
 import Data.Word
 import Data.Char
+import Data.Typeable
 
 class Encoding enc where
     decodeChar :: ByteSource m => enc -> m Char
@@ -17,6 +19,21 @@ class Encoding enc where
     decode e = untilM sourceEmpty (decodeChar e)
     encode :: ByteSink m => enc -> String -> m ()
     encode e = mapM_ (encodeChar e)
+    encodeable :: enc -> Char -> Bool
+
+data DynEncoding = forall enc. (Encoding enc,Eq enc,Typeable enc) => DynEncoding enc
+
+instance Encoding DynEncoding where
+    decodeChar (DynEncoding e) = decodeChar e
+    encodeChar (DynEncoding e) = encodeChar e
+    decode (DynEncoding e) = decode e
+    encode (DynEncoding e) = encode e
+    encodeable (DynEncoding e) = encodeable e
+
+instance Eq DynEncoding where
+    (DynEncoding e1) == (DynEncoding e2) = case cast e2 of
+                                             Nothing -> False
+                                             Just e2' -> e1==e2'
 
 untilM :: Monad m => m Bool -> m a -> m [a]
 untilM check act = do

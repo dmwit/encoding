@@ -7,6 +7,7 @@ import Data.Char
 import Data.Maybe (mapMaybe)
 import Data.Map as Map (fromList,lookup)
 import Data.Array
+import Data.Typeable
 import Language.Haskell.TH
 
 makeISOInstance :: String -> FilePath -> Q [Dec]
@@ -23,9 +24,9 @@ makeJISInstance name file = do
   arr <- decodingArray2 (fillTranslations (0x21,0x21) (0x7E,0x7E) trans)
   return $ encodingInstance 'encodeWithMap2 'decodeWithArray2 name mp arr
 
-encodingInstance :: Name -> Name -> String -> Exp -> Exp -> [Dec]
-encodingInstance enc dec name mp arr
-    = [ DataD [] rname [] [NormalC rname []] [''Show]
+encodingInstance :: Name -> Name -> Name -> String -> Exp -> Exp -> [Dec]
+encodingInstance enc dec able name mp arr
+    = [ DataD [] rname [] [NormalC rname []] [''Show,''Eq,''Typeable]
       , InstanceD [] (AppT (ConT ''Encoding) (ConT rname))
                       [FunD 'encodeChar
                        [Clause [WildP] (NormalB $ AppE (VarE enc) (VarE rmp))

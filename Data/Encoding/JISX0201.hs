@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell,DeriveDataTypeable #-}
 module Data.Encoding.JISX0201 where
 
 import Data.Encoding.Helper.Template (makeISOInstance)
