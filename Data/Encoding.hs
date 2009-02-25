@@ -306,7 +306,7 @@ encodingFromStringMaybe codeName = case (normalizeEncoding codeName) of
     "macintosh"          -> Just $ DynEncoding MacOSRoman
     -- JIS X 0201
     "jis_x_0201"         -> Just $ DynEncoding JISX0201
-    -- JIS x 0208
+    -- JIS X 0208
     "jis_x_0208"         -> Just $ DynEncoding JISX0208
     -- ISO 2022-JP
     "iso_2022_jp"        -> Just $ DynEncoding ISO2022JP

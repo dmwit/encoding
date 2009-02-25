@@ -44,7 +44,7 @@ untilM check act = do
            x <- act
            xs <- untilM check act
            return (x:xs)
-           )
+         )
 
 untilM_ :: Monad m => m Bool -> m a -> m ()
 untilM_ check act = untilM check act >> return ()
