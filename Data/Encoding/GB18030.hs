@@ -127,6 +127,7 @@ instance Encoding GB18030 where
 	                  2 -> pushWord8 w2
 	                  3 -> pushWord8 w2 >> pushWord8 w3
 	                  4 -> pushWord8 w2 >> pushWord8 w3 >> pushWord8 w4
+    encodeable _ c = c <= '\x10FFFF'
 
 linear :: Word8 -> Word8 -> Word8 -> Word8 -> Int
 linear w1 w2 w3 w4

@@ -182,3 +182,4 @@ instance Encoding BootString where
                                 Nothing -> punyDecode base nbase
                                 Just ww -> throwException (IllegalCharacter ww)
 	Nothing -> punyDecode [] wrds
+    encodeable bs c = True -- XXX: hm, really?

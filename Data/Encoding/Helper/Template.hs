@@ -15,14 +15,14 @@ makeISOInstance name file = do
   trans <- runIO (readTranslation file)
   mp <- encodingMap (validTranslations trans)
   arr <- decodingArray (fillTranslations 0 255 trans)
-  return $ encodingInstance 'encodeWithMap 'decodeWithArray name mp arr
+  return $ encodingInstance 'encodeWithMap 'decodeWithArray 'encodeableWithMap name mp arr
 
 makeJISInstance :: String -> FilePath -> Q [Dec]
 makeJISInstance name file = do
   trans <- runIO (readJISTranslation file)
   mp <- encodingMap2 (validTranslations trans)
   arr <- decodingArray2 (fillTranslations (0x21,0x21) (0x7E,0x7E) trans)
-  return $ encodingInstance 'encodeWithMap2 'decodeWithArray2 name mp arr
+  return $ encodingInstance 'encodeWithMap2 'decodeWithArray2 'encodeableWithMap name mp arr
 
 encodingInstance :: Name -> Name -> Name -> String -> Exp -> Exp -> [Dec]
 encodingInstance enc dec able name mp arr
@@ -35,6 +35,10 @@ encodingInstance enc dec able name mp arr
                       ,FunD 'decodeChar
                        [Clause [WildP] (NormalB $ AppE (VarE dec) (VarE rarr))
                         [ValD (VarP rarr) (NormalB arr) []]
+                       ]
+                      ,FunD 'encodeable
+                       [Clause [WildP] (NormalB $ AppE (VarE able) (VarE rmp))
+                        [ValD (VarP rmp) (NormalB mp) []]
                        ]
                       ]
       ]

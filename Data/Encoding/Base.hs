@@ -61,6 +61,9 @@ encodeWithMap2 mp c = case Map.lookup c mp of
                           pushWord8 w1
                           pushWord8 w2
 
+encodeableWithMap :: Map Char a -> Char -> Bool
+encodeableWithMap = flip Map.member
+
 decodeWithArray :: ByteSource m => Array Word8 (Maybe Char) -> m Char
 decodeWithArray arr = do
   w <- fetchWord8

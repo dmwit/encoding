@@ -44,3 +44,4 @@ instance Encoding UTF32 where
           rest <- untilM sourceEmpty (decodeChar UTF32)
           return ((chr $ fromIntegral ch):rest)
     decode enc = untilM sourceEmpty (decodeChar enc)
+    encodeable _ _ = True

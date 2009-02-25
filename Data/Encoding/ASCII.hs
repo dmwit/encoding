@@ -15,3 +15,4 @@ instance Encoding ASCII where
       return $ chr $ fromIntegral w
     encodeChar _ c = do
       pushWord8 $ fromIntegral $ ord c
+    encodeable _ c = c < '\128'

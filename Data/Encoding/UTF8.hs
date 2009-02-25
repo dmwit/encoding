@@ -38,6 +38,7 @@ instance Encoding UTF8 where
                where
                  n = ord c
                  p8 = pushWord8.fromIntegral
+    encodeable _ c = c <= '\x10FFFF'
     decodeChar UTF8 = do
       w1 <- fetchWord8
       case () of 

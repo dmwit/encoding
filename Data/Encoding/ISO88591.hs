@@ -18,3 +18,4 @@ instance Encoding ISO88591 where
     decodeChar _ = do
       w <- fetchWord8
       return (chr $ fromIntegral w)
+    encodeable _ c = c <= '\255'

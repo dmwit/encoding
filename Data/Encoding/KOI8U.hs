@@ -57,3 +57,4 @@ instance Encoding KOI8U where
 	| otherwise   = case lookup ch koi8uMap of
 		Just w  -> pushWord8 w
 		Nothing -> throwException (HasNoRepresentation ch)
+    encodeable _ c = member c koi8uMap
