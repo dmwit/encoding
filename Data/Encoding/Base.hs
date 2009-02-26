@@ -76,7 +76,11 @@ decodeWithArray2 :: ByteSource m => UArray (Word8,Word8) Int -> m Char
 decodeWithArray2 arr = do
   w1 <- fetchWord8
   w2 <- fetchWord8
-  let res = arr!(w1,w2)
-  if res < 0
-    then throwException $ IllegalCharacter w1
-    else return $ chr res
+  if inRange (bounds arr) (w1,w2)
+    then (do
+           let res = arr!(w1,w2)
+           if res < 0
+             then throwException $ IllegalCharacter w1
+             else return $ chr res
+         )
+    else throwException $ IllegalCharacter w1
