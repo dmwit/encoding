@@ -62,6 +62,7 @@ Library
     Data.Encoding.MacOSRoman
     Data.Encoding.JISX0201
     Data.Encoding.JISX0208
+    Data.Encoding.JISX0212
     Data.Encoding.ISO2022
     Data.Encoding.ISO2022JP
     System.IO.Encoding
