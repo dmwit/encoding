@@ -3,4 +3,4 @@ module Data.Encoding.JISX0208 where
 
 import Data.Encoding.Helper.Template (makeJISInstance)
 
-$( makeJISInstance "JISX0208" "JIS0208.TXT" )
+$( makeJISInstance 1 "JISX0208" "JIS0208.TXT" )

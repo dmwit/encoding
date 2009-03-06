@@ -12,14 +12,14 @@ import Language.Haskell.TH
 
 makeISOInstance :: String -> FilePath -> Q [Dec]
 makeISOInstance name file = do
-  trans <- runIO (readTranslation file)
+  trans <- runIO (readTranslation 0 id file)
   mp <- encodingMap (validTranslations trans)
   arr <- decodingArray (fillTranslations 0 255 trans)
   return $ encodingInstance 'encodeWithMap 'decodeWithArray 'encodeableWithMap name mp arr
 
-makeJISInstance :: String -> FilePath -> Q [Dec]
-makeJISInstance name file = do
-  trans <- runIO (readJISTranslation file)
+makeJISInstance :: Int -> String -> FilePath -> Q [Dec]
+makeJISInstance offset name file = do
+  trans <- runIO (readTranslation offset (\src -> (src `shiftR` 8,src .&. 0xFF)) file)
   mp <- encodingMap2 (validTranslations trans)
   arr <- decodingArray2 (fillTranslations (0x21,0x21) (0x7E,0x7E) trans)
   return $ encodingInstance 'encodeWithMap2 'decodeWithArray2 'encodeableWithMap name mp arr
@@ -94,30 +94,22 @@ encodingMap2 trans = return $ AppE
                      (ListE [ TupE [LitE $ CharL to,TupE [integerExp f1,integerExp f2]]
                               | ((f1,f2),to) <- trans])
 
-readTranslation :: FilePath -> IO [(Integer,Maybe Char)]
-readTranslation file = do
+readTranslation :: Int -> (Integer -> a) -> FilePath -> IO [(a,Maybe Char)]
+readTranslation offset f file = do
   cont <- readFile file
-  return $ mapMaybe (\ln -> case ln of
-                             [src] -> Just (src,Nothing)
-                             [src,trg] -> Just (src,Just $ chr $ fromIntegral trg)
+  return $ mapMaybe (\ln -> case drop offset ln of
+                             [src] -> Just (f src,Nothing)
+                             [src,trg] -> Just (f src,Just $ chr $ fromIntegral trg)
                              _ ->  Nothing) (parseTranslationTable cont)
-
-readJISTranslation :: FilePath -> IO [((Integer,Integer),Maybe Char)]
-readJISTranslation file = do
-  cont <- readFile file
-  return $ mapMaybe (\ln -> case ln of
-                             [_,src] -> Just ((src `shiftR` 8,src .&. 0xFF),Nothing)
-                             [_,src,trg] -> Just ((src `shiftR` 8,src .&. 0xFF),Just $ chr $ fromIntegral trg)
-                             _ -> Nothing) (parseTranslationTable cont)
 
 parseTranslationTable :: String -> [[Integer]]
 parseTranslationTable cont = filter (not.null) (map (\ln -> map read (takeWhile ((/='#').head) (words ln))) (lines cont))
 
-fillTranslations :: Ix a => a -> a -> [(a,Maybe Char)] -> [(a,Maybe Char)]
+fillTranslations :: (Ix a,Show a) => a -> a -> [(a,Maybe Char)] -> [(a,Maybe Char)]
 fillTranslations f t = merge (range (f,t))
     where
       merge xs [] = map (\x -> (x,Nothing)) xs
-      merge [] _  = error "Data.Encoding.Helper.Template.fillTranslations: Character translations out of range"
+      merge [] cs  = error $ "Data.Encoding.Helper.Template.fillTranslations: Character translations out of range: " ++ show cs
       merge (x:xs) (y:ys) = if x < fst y
                             then (x,Nothing):(merge xs (y:ys))
                             else y:(merge xs ys)
