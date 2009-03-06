@@ -10,6 +10,37 @@ Category:	Codec
 Homepage:	http://code.haskell.org/encoding/
 Cabal-Version:	>=1.2
 Build-Type:	Simple
+Extra-Source-Files:
+  NEWS
+  8859-2.TXT
+  8859-3.TXT
+  8859-4.TXT
+  8859-5.TXT
+  8859-6.TXT
+  8859-7.TXT
+  8859-8.TXT
+  8859-9.TXT
+  8859-10.TXT
+  8859-11.TXT
+  8859-13.TXT
+  8859-14.TXT
+  8859-15.TXT
+  8859-16.TXT
+  CP1250.TXT
+  CP1251.TXT
+  CP1252.TXT
+  CP1253.TXT
+  CP1254.TXT
+  CP1255.TXT
+  CP1256.TXT
+  CP1257.TXT
+  CP1258.TXT
+  ROMAN.TXT
+  JIS0201.TXT
+  JIS0208.TXT
+  JIS0212.TXT
+  gb-18030-2000.xml
+  create_gb18030_data.sh
 
 Flag splitBase
   description:	Choose the new smaller, split-up base package.
@@ -57,7 +88,6 @@ Library
     Data.Encoding.CP1257
     Data.Encoding.CP1258
     Data.Encoding.GB18030
-    Data.Encoding.Helper.Template
     Data.Encoding.BootString
     Data.Encoding.MacOSRoman
     Data.Encoding.JISX0201
@@ -66,3 +96,7 @@ Library
     Data.Encoding.ISO2022
     Data.Encoding.ISO2022JP
     System.IO.Encoding
+  Other-Modules:
+    Data.Encoding.Base
+    Data.Encoding.Helper.Template
+    Data.Encoding.GB18030Data
