@@ -100,3 +100,9 @@ Library
     Data.Encoding.Base
     Data.Encoding.Helper.Template
     Data.Encoding.GB18030Data
+  Includes:
+    system_encoding.h
+  Install-Includes:
+    system_encoding.h
+  C-Sources:
+    system_encoding.c
