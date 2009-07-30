@@ -19,6 +19,7 @@ module Data.Encoding
     ,decodeStrictByteString
     ,decodeStrictByteStringExplicit
     ,encodingFromString
+    ,encodingFromStringExplicit
     )
     where
 
@@ -125,8 +126,8 @@ decodeStrictByteStringExplicit :: Encoding enc => enc -> BS.ByteString -> Either
 decodeStrictByteStringExplicit e str = evalStateT (decode e) str
 
 -- | Like 'encodingFromString' but returns 'Nothing' instead of throwing an error
-encodingFromStringMaybe :: String -> Maybe DynEncoding
-encodingFromStringMaybe codeName = case (normalizeEncoding codeName) of
+encodingFromStringExplicit :: String -> Maybe DynEncoding
+encodingFromStringExplicit codeName = case (normalizeEncoding codeName) of
     -- ASCII
     "ascii"              -> Just $ DynEncoding ASCII
     "646"                -> Just $ DynEncoding ASCII
@@ -321,4 +322,4 @@ encodingFromString :: String -> DynEncoding
 encodingFromString str = maybe
 	(error $ "Data.Encoding.encodingFromString: Unknown encoding: "++show str)
 	id
-	(encodingFromStringMaybe str)
+	(encodingFromStringExplicit str)
