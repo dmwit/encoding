@@ -19,6 +19,7 @@ import Data.Encoding.ISO885913
 import Data.Encoding.ISO885914
 import Data.Encoding.JISX0208
 import Data.Encoding.ISO2022JP
+import Data.Encoding.GB18030
 import Data.Encoding.BootString
 import Test.HUnit
 import Test.QuickCheck hiding (test)
@@ -59,6 +60,8 @@ identityTests = do
   quickCheckEncoding ISO885914
   putStrLn "for Punycode..."
   quickCheck $ encodingIdentity punycode
+  putStrLn "for GB18030"
+  quickCheck $ encodingIdentity GB18030
 
 utf8Tests :: Test
 utf8Tests = TestList $ map test $ concat
@@ -249,3 +252,26 @@ jisTests = TestList $ map test $
            [EncodingTest JISX0208 "\x4E9C"
             [0x30,0x21]
            ]
+
+gb18030Tests :: Test
+gb18030Tests = TestList $ map test $
+               [EncodingTest GB18030 "\x0000\x003F\x0040\x007F\x0080\x00BF\x00C0\x00FF\x0100\x3FFF\x4000\x7FFF\x8000\xBFFF\xC000\xEFFF\xF000\xFFFF"
+                (concat [[0x00]
+                        ,[0x3F]
+                        ,[0x40]
+                        ,[0x7F]
+                        ,[0x81,0x30,0x81,0x30]
+                        ,[0x81,0x30,0x86,0x37]
+                        ,[0x81,0x30,0x86,0x38]
+                        ,[0x81,0x30,0x8B,0x37]
+                        ,[0x81,0x30,0x8B,0x38]
+                        ,[0x82,0x32,0xA6,0x36]
+                        ,[0x82,0x32,0xA6,0x37]
+                        ,[0xC2,0x52]
+                        ,[0xD2,0xAB]
+                        ,[0x83,0x31,0xD7,0x34]
+                        ,[0x83,0x31,0xD7,0x35]
+                        ,[0x83,0x38,0x96,0x36]
+                        ,[0x83,0x38,0x96,0x37]
+                        ,[0x84,0x31,0xA4,0x39]])
+               ]
