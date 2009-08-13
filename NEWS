@@ -1,3 +1,13 @@
+Changes from 0.5.2 to 0.6.0
+---------------------------
+
+* Moved from TemplateHaskell to a custom pre-processor for code-generation.
+  This is necessary because:
+  - TemplateHaskell is really slow for large data structures
+  - TemplateHaskell doesn't yet support the MagicHash extension that is useful for the library
+* Use efficient, static data structures for encoding/decoding
+* Fixed bug in UTF-8 that could call 'chr' with bad arguments
+
 Changes from 0.5 to 0.5.2
 -------------------------
 
