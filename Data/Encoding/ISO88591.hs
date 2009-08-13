@@ -1,4 +1,6 @@
 {-# LANGUAGE DeriveDataTypeable #-}
+{- | Implements ISO\/IEC 8859-1 alias latin-1 encoding. See <http://en.wikipedia.org/wiki/ISO/IEC_8859-1> for further information.
+ -}
 module Data.Encoding.ISO88591 where
 
 import Control.Throws
