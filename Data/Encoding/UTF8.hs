@@ -69,11 +69,13 @@ instance Encoding UTF8 where
                              v2 = w2 .&. 0x3F
                              v3 = w3 .&. 0x3F
                              v4 = w4 .&. 0x3F
-                         return $ chr $
-                                    ((fromIntegral v1) `shiftL` 18)
+                             v  = ((fromIntegral v1) `shiftL` 18)
                                     .|. ((fromIntegral v2) `shiftL` 12)
                                     .|. ((fromIntegral v3) `shiftL` 6)
                                     .|. (fromIntegral v4)
+                         if v <= 0x10FFFF
+                           then return $ chr v
+                           else throwException (IllegalRepresentation [w1,w2,w3,w4])
           | otherwise -> throwException (IllegalCharacter w1)
     decodeChar UTF8Strict = do
       w1 <- fetchWord8
@@ -109,13 +111,15 @@ instance Encoding UTF8 where
                              v2 = w2 .&. 0x3F
                              v3 = w3 .&. 0x3F
                              v4 = w4 .&. 0x3F
-                         if v1 == 0 && v2 < 0x10
-                           then throwException (IllegalRepresentation [w1,w2,w3,w4])
-                           else return $ chr $
-                                    ((fromIntegral v1) `shiftL` 18)
+                             v = ((fromIntegral v1) `shiftL` 18)
                                     .|. ((fromIntegral v2) `shiftL` 12)
                                     .|. ((fromIntegral v3) `shiftL` 6)
                                     .|. (fromIntegral v4)
+                         if v1 == 0 && v2 < 0x10
+                           then throwException (IllegalRepresentation [w1,w2,w3,w4])
+                           else (if v <= 0x10FFFF
+                                 then return $ chr v
+                                 else throwException (IllegalRepresentation [w1,w2,w3,w4]))
           | otherwise -> throwException (IllegalCharacter w1)
           where
             invalidExtend wrd = wrd .&. 0xC0 /= 0x80
