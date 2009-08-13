@@ -10,7 +10,6 @@ import Data.Char
 import Data.Word
 import Data.Ix
 import Data.Bits
-import Data.Encoding.Preprocessor.Addr
 import Data.Array.Static.Builder
 import Data.CharMap.Builder
 
