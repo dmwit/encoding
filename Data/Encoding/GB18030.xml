@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE characterMapping SYSTEM "http://www.unicode.org/unicode/reports/tr22/CharacterMapping.dtd">
-<characterMapping id="gb-18030-2000" version="3">
+<characterMapping
+   id="gb-18030-2000" version="3"
+   description="GB18030 is a chinese character encoding that is mandatory in china (if you - don't implement it, you're not allowed to sell your software there).">
  <history>
   <modified version="3" date="2001-02-21">
    0x80 appears to be a valid (and unassigned) single-byte code, added to the validity.

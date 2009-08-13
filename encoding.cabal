@@ -12,42 +12,20 @@ Cabal-Version:	>=1.2
 Build-Type:	Simple
 Extra-Source-Files:
   NEWS
-  8859-2.TXT
-  8859-3.TXT
-  8859-4.TXT
-  8859-5.TXT
-  8859-6.TXT
-  8859-7.TXT
-  8859-8.TXT
-  8859-9.TXT
-  8859-10.TXT
-  8859-11.TXT
-  8859-13.TXT
-  8859-14.TXT
-  8859-15.TXT
-  8859-16.TXT
-  CP1250.TXT
-  CP1251.TXT
-  CP1252.TXT
-  CP1253.TXT
-  CP1254.TXT
-  CP1255.TXT
-  CP1256.TXT
-  CP1257.TXT
-  CP1258.TXT
-  ROMAN.TXT
-  JIS0201.TXT
-  JIS0208.TXT
-  JIS0212.TXT
   gb-18030-2000.xml
   create_gb18030_data.sh
 
 Flag splitBase
   description:	Choose the new smaller, split-up base package.
+Flag newGHC
+  description: Use ghc version > 6.10
 
 Library
   if flag(splitBase)
-    Build-Depends:	bytestring, base >= 3, binary, mtl, containers, extensible-exceptions, array, template-haskell, regex-compat
+    if flag(newGHC)
+      Build-Depends:	bytestring, base >= 3 && < 5, binary, mtl, containers, extensible-exceptions, array, template-haskell, regex-compat, ghc-prim, ghc >= 6.10
+    else
+      Build-Depends:	bytestring, base >= 3 && < 5, binary, mtl, containers, extensible-exceptions, array, template-haskell, regex-compat, ghc < 6.10
   else
     Build-Depends:	base < 3, binary, extensible-exceptions, template-haskell
 
@@ -98,8 +76,10 @@ Library
     System.IO.Encoding
   Other-Modules:
     Data.Encoding.Base
-    Data.Encoding.Helper.Template
-    Data.Encoding.GB18030Data
+    Data.Array.Static
+    Data.Map.Static
+    Data.Static
+    Data.CharMap
   Includes:
     system_encoding.h
   Install-Includes:
