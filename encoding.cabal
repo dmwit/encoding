@@ -9,9 +9,12 @@ Description:
 Category:	Codec
 Homepage:	http://code.haskell.org/encoding/
 Cabal-Version:	>=1.2
-Build-Type:	Simple
+Build-Type:	Custom
 Extra-Source-Files:
   NEWS
+  Data/Encoding/Preprocessor/Mapping.hs
+  Data/Encoding/Preprocessor/XMLMapping.hs
+  Data/Encoding/Preprocessor/XMLMappingBuilder.hs
 
 Flag splitBase
   description:	Choose the new smaller, split-up base package.
