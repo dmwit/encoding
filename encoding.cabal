@@ -12,8 +12,6 @@ Cabal-Version:	>=1.2
 Build-Type:	Simple
 Extra-Source-Files:
   NEWS
-  gb-18030-2000.xml
-  create_gb18030_data.sh
 
 Flag splitBase
   description:	Choose the new smaller, split-up base package.
