@@ -12,15 +12,27 @@ import Data.Word
 import Data.Char
 import Data.Typeable
 
+{- | The base class for all encodings. At least decodeChar, encodeChar and encodeable must be implemented.
+ -}
 class Encoding enc where
+    -- | Read a single character of a ByteSource
     decodeChar :: ByteSource m => enc -> m Char
+    -- | Encode a single character and write it to a ByteSink
     encodeChar :: ByteSink m => enc -> Char -> m ()
+    -- | Read characters from a ByteSource until it is empty
     decode :: ByteSource m => enc -> m String
     decode e = untilM sourceEmpty (decodeChar e)
+    -- | Encode a String and write it to a ByteSink
     encode :: ByteSink m => enc -> String -> m ()
     encode e = mapM_ (encodeChar e)
+    -- | Tests whether a given character is representable in the Encoding.
+    --   If this yields True, encodeChar must not fail.
+    --   If it yields False, encodeChar _must_ throw an exception.
     encodeable :: enc -> Char -> Bool
 
+{- | Wraps all possible encoding types into one data type.
+     Used when a function needs to return an encoding.
+ -}
 data DynEncoding = forall enc. (Encoding enc,Eq enc,Typeable enc,Show enc) => DynEncoding enc
 
 instance Show DynEncoding where
