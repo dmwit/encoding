@@ -21,7 +21,10 @@ class Encoding enc where
     encode e = mapM_ (encodeChar e)
     encodeable :: enc -> Char -> Bool
 
-data DynEncoding = forall enc. (Encoding enc,Eq enc,Typeable enc) => DynEncoding enc
+data DynEncoding = forall enc. (Encoding enc,Eq enc,Typeable enc,Show enc) => DynEncoding enc
+
+instance Show DynEncoding where
+    show (DynEncoding enc) = show enc
 
 instance Encoding DynEncoding where
     decodeChar (DynEncoding e) = decodeChar e
