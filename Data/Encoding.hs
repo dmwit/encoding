@@ -76,6 +76,22 @@ import Data.Encoding.MacOSRoman
 import Data.Encoding.JISX0201
 import Data.Encoding.JISX0208
 import Data.Encoding.ISO2022JP
+import Data.Encoding.CP437
+import Data.Encoding.CP737
+import Data.Encoding.CP775
+import Data.Encoding.CP850
+import Data.Encoding.CP852
+import Data.Encoding.CP855
+import Data.Encoding.CP857
+import Data.Encoding.CP860
+import Data.Encoding.CP861
+import Data.Encoding.CP862
+import Data.Encoding.CP863
+import Data.Encoding.CP864
+import Data.Encoding.CP865
+import Data.Encoding.CP866
+import Data.Encoding.CP869
+import Data.Encoding.CP874
 import Data.Char
 import Text.Regex
 
@@ -311,6 +327,23 @@ encodingFromStringExplicit codeName = case (normalizeEncoding codeName) of
     "jis_x_0208"         -> Just $ DynEncoding JISX0208
     -- ISO 2022-JP
     "iso_2022_jp"        -> Just $ DynEncoding ISO2022JP
+    -- MSDOS codepages
+    "cp437"              -> Just $ DynEncoding CP437
+    "cp737"              -> Just $ DynEncoding CP737
+    "cp775"              -> Just $ DynEncoding CP775
+    "cp850"              -> Just $ DynEncoding CP850
+    "cp852"              -> Just $ DynEncoding CP852
+    "cp855"              -> Just $ DynEncoding CP855
+    "cp857"              -> Just $ DynEncoding CP857
+    "cp860"              -> Just $ DynEncoding CP860
+    "cp861"              -> Just $ DynEncoding CP861
+    "cp862"              -> Just $ DynEncoding CP862
+    "cp863"              -> Just $ DynEncoding CP863
+    "cp864"              -> Just $ DynEncoding CP864
+    "cp865"              -> Just $ DynEncoding CP865
+    "cp866"              -> Just $ DynEncoding CP866
+    "cp869"              -> Just $ DynEncoding CP869
+    "cp874"              -> Just $ DynEncoding CP874
     -- defaults to nothing
     _                    -> Nothing
   where

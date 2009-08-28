@@ -74,6 +74,22 @@ Library
     Data.Encoding.JISX0212
     Data.Encoding.ISO2022
     Data.Encoding.ISO2022JP
+    Data.Encoding.CP437
+    Data.Encoding.CP737
+    Data.Encoding.CP775
+    Data.Encoding.CP850
+    Data.Encoding.CP852
+    Data.Encoding.CP855
+    Data.Encoding.CP857
+    Data.Encoding.CP860
+    Data.Encoding.CP861
+    Data.Encoding.CP862
+    Data.Encoding.CP863
+    Data.Encoding.CP864
+    Data.Encoding.CP865
+    Data.Encoding.CP866
+    Data.Encoding.CP869
+    Data.Encoding.CP874
     System.IO.Encoding
   Other-Modules:
     Data.Encoding.Base
