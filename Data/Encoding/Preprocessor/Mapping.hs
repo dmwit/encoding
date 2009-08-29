@@ -35,6 +35,12 @@ parseTranslationTable cont = map (\ln -> let (trans,comm) = break (=='#') ln
                                                                       _ -> Just (tail comm))
                                  ) (lines cont)
 
+buildDocTable :: [(Integer,Maybe Char)] -> [String]
+buildDocTable = intersperse "".
+                map (\(i,mbc) -> show i ++ (case mbc of
+                                             Nothing -> ""
+                                             Just c -> "\t = &#"++show (ord c)++"; ("++show (ord c)++")"))
+
 {-fillTranslations :: (Ix a,Show a) => a -> a -> [(a,Maybe Char)] -> [(a,Maybe Char)]
 fillTranslations f t = merge (range (f,t))
     where
@@ -113,8 +119,11 @@ preprocessMapping tp src trg mods name = do
                 ["{- This file has been auto-generated. Do not edit it. -}"
                 ,"{-# LANGUAGE MagicHash,DeriveDataTypeable #-}"
                 ]++(case doc of
-                      [] -> []
-                      _ -> ("{- | "++head doc):(map (\ln -> "     "++ln) (tail doc)) ++ [" -}"])
+                      [] -> ["{- |"]
+                      _ -> ("{- | "++head doc):(map (\ln -> "     "++ln) (tail doc)))
+                ++[""]
+                ++buildDocTable trans
+                ++[" -}"]
                 ++
                 ["module "++mod++"("++name++"(..)) where"
                 ,""
