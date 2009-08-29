@@ -5,8 +5,9 @@ import Data.Encoding.Preprocessor.Mapping
 import Data.Encoding.Preprocessor.XMLMappingBuilder
 
 main = defaultMainWithHooks (simpleUserHooks
-                             {hookedPreProcessors = ("mapping",\_ _ -> mappingPreprocessor)
-                              :("mapping2",\_ _ -> mappingPreprocessor)
-                              :("xml",\_ _ -> xmlPreprocessor)
-                              :(hookedPreProcessors simpleUserHooks)
+                             {hookedPreProcessors = (("mapping",\_ _ -> mappingPreprocessor)
+                                                     :("mapping2",\_ _ -> mappingPreprocessor)
+                                                     :("xml",\_ _ -> xmlPreprocessor)
+                                                     :(hookedPreProcessors simpleUserHooks)
+                                                    )
                              })

@@ -44,3 +44,24 @@ instance StaticElement (Maybe Char) where
                              )
     gen Nothing = gen (-1::Word32)
     gen (Just c) = gen (fromIntegral (ord c)::Word32)
+
+instance StaticElement a => StaticElement (a,a) where
+    extract addr i = let x1 = extract addr (i *# 2#)
+                         x2 = extract addr (i *# 2# +# 1#)
+                     in (x1,x2)
+    gen (x1,x2) = gen x1 ++ gen x2
+
+instance StaticElement a => StaticElement (a,a,a) where
+    extract addr i = let x1 = extract addr (i *# 3#)
+                         x2 = extract addr (i *# 3# +# 1#)
+                         x3 = extract addr (i *# 3# +# 2#)
+                     in (x1,x2,x3)
+    gen (x1,x2,x3) = gen x1 ++ gen x2 ++ gen x3
+
+instance StaticElement a => StaticElement (a,a,a,a) where
+    extract addr i = let x1 = extract addr (i *# 4#)
+                         x2 = extract addr (i *# 4# +# 1#)
+                         x3 = extract addr (i *# 4# +# 2#)
+                         x4 = extract addr (i *# 4# +# 3#)
+                     in (x1,x2,x3,x4)
+    gen (x1,x2,x3,x4) = gen x1 ++ gen x2 ++ gen x3 ++ gen x4
