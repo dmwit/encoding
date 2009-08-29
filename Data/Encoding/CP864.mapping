@@ -1,20 +1,3 @@
-#
-#    Name:     cp864_DOSArabic to Unicode table
-#    Unicode version: 2.0
-#    Table version: 2.00
-#    Table format:  Format A
-#    Date:          04/24/96
-#    Contact: Shawn.Steele@microsoft.com
-#                   
-#    General notes: none
-#
-#    Format: Three tab-separated columns
-#        Column #1 is the cp864_DOSArabic code (in hex)
-#        Column #2 is the Unicode (in hex as 0xXXXX)
-#        Column #3 is the Unicode name (follows a comment sign, '#')
-#
-#    The entries are in cp864_DOSArabic order
-#
 0x00	0x0000	#NULL
 0x01	0x0001	#START OF HEADING
 0x02	0x0002	#START OF TEXT

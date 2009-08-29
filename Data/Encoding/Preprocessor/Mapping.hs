@@ -18,16 +18,22 @@ data MappingType
     | JISMapping
     deriving (Eq,Ord,Show,Read)
 
-readTranslation :: Int -> FilePath -> IO [(Integer,Maybe Char)]
+readTranslation :: Int -> FilePath -> IO ([(Integer,Maybe Char)],[String])
 readTranslation offset file = do
-  cont <- readFile file
-  return $ mapMaybe (\ln -> case drop offset ln of
-                             [src] -> Just (src,Nothing)
-                             [src,trg] -> Just (src,Just $ chr $ fromIntegral trg)
-                             _ ->  Nothing) (parseTranslationTable cont)
+  cont <- fmap parseTranslationTable $ readFile file
+  let docstr = mapMaybe snd (takeWhile (null.fst) cont)
+  let trans =  mapMaybe (\(ln,comm) -> case drop offset ln of
+                                        [src] -> Just (src,Nothing)
+                                        [src,trg] -> Just (src,Just $ chr $ fromIntegral trg)
+                                        _ ->  Nothing) cont
+  return (trans,docstr)
 
-parseTranslationTable :: String -> [[Integer]]
-parseTranslationTable cont = filter (not.null) (map (\ln -> map read (takeWhile ((/='#').head) (words ln))) (lines cont))
+parseTranslationTable :: String -> [([Integer],Maybe String)]
+parseTranslationTable cont = map (\ln -> let (trans,comm) = break (=='#') ln
+                                         in (map read (words trans),case comm of
+                                                                      "" -> Nothing
+                                                                      _ -> Just (tail comm))
+                                 ) (lines cont)
 
 {-fillTranslations :: (Ix a,Show a) => a -> a -> [(a,Maybe Char)] -> [(a,Maybe Char)]
 fillTranslations f t = merge (range (f,t))
@@ -70,7 +76,7 @@ mappingPreprocessor = PreProcessor
 
 preprocessMapping :: MappingType -> FilePath -> FilePath -> [String] -> String -> IO ()
 preprocessMapping tp src trg mods name = do
-  trans <- readTranslation 0 src
+  (trans,doc) <- readTranslation 0 src
   let mod = concat $ intersperse "." (mods++[name])
   let wsize = case tp of
                 ISOMapping -> 1
@@ -106,7 +112,11 @@ preprocessMapping tp src trg mods name = do
   writeFile trg $ unlines $
                 ["{- This file has been auto-generated. Do not edit it. -}"
                 ,"{-# LANGUAGE MagicHash,DeriveDataTypeable #-}"
-                ,"module "++mod++"("++name++"(..)) where"
+                ]++(case doc of
+                      [] -> []
+                      _ -> ("{- | "++head doc):(map (\ln -> "     "++ln) (tail doc)) ++ [" -}"])
+                ++
+                ["module "++mod++"("++name++"(..)) where"
                 ,""
                 ,"import Data.Encoding.Base"
                 ,"import Data.Encoding.ByteSource"

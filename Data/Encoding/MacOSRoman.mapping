@@ -1,83 +1,4 @@
-#=======================================================================
-#   File name:  ROMAN.TXT
-#
-#   Contents:   Map (external version) from Mac OS Roman
-#               character set to Unicode 2.1 and later.
-#
-#   Copyright:  (c) 1994-2002, 2005 by Apple Computer, Inc., all rights
-#               reserved.
-#
-#   Contact:    charsets@apple.com
-#
-#   Changes:
-#
-#       c02  2005-Apr-05    Update header comments. Matches internal xml
-#                           <c1.1> and Text Encoding Converter 2.0.
-#      b4,c1 2002-Dec-19    Update URLs, notes. Matches internal
-#                           utom<b5>.
-#       b03  1999-Sep-22    Update contact e-mail address. Matches
-#                           internal utom<b4>, ufrm<b3>, and Text
-#                           Encoding Converter version 1.5.
-#       b02  1998-Aug-18    Encoding changed for Mac OS 8.5; change
-#                           mapping of 0xDB from CURRENCY SIGN to
-#                           EURO SIGN. Matches internal utom<b3>,
-#                           ufrm<b3>.
-#       n08  1998-Feb-05    Minor update to header comments
-#       n06  1997-Dec-14    Add warning about future changes to 0xDB
-#                           from CURRENCY SIGN to EURO SIGN. Clarify
-#                           some header information
-#       n04  1997-Dec-01    Update to match internal utom<n3>, ufrm<n22>:
-#                           Change standard mapping for 0xBD from U+2126
-#                           to its canonical decomposition, U+03A9.
-#       n03  1995-Apr-15    First version (after fixing some typos).
-#                           Matches internal ufrm<n9>.
-#
-# Standard header:
-# ----------------
-#
-#   Apple, the Apple logo, and Macintosh are trademarks of Apple
-#   Computer, Inc., registered in the United States and other countries.
-#   Unicode is a trademark of Unicode Inc. For the sake of brevity,
-#   throughout this document, "Macintosh" can be used to refer to
-#   Macintosh computers and "Unicode" can be used to refer to the
-#   Unicode standard.
-#
-#   Apple Computer, Inc. ("Apple") makes no warranty or representation,
-#   either express or implied, with respect to this document and the
-#   included data, its quality, accuracy, or fitness for a particular
-#   purpose. In no event will Apple be liable for direct, indirect,
-#   special, incidental, or consequential damages resulting from any
-#   defect or inaccuracy in this document or the included data.
-#
-#   These mapping tables and character lists are subject to change.
-#   The latest tables should be available from the following:
-#
-#   <http://www.unicode.org/Public/MAPPINGS/VENDORS/APPLE/>
-#
-#   For general information about Mac OS encodings and these mapping
-#   tables, see the file "README.TXT".
-#
-# Format:
-# -------
-#
-#   Three tab-separated columns;
-#   '#' begins a comment which continues to the end of the line.
-#     Column #1 is the Mac OS Roman code (in hex as 0xNN)
-#     Column #2 is the corresponding Unicode (in hex as 0xNNNN)
-#     Column #3 is a comment containing the Unicode name
-#
-#   The entries are in Mac OS Roman code order.
-#
-#   One of these mappings requires the use of a corporate character.
-#   See the file "CORPCHAR.TXT" and notes below.
-#
-#   Control character mappings are not shown in this table, following
-#   the conventions of the standard UTC mapping tables. However, the
-#   Mac OS Roman character set uses the standard control characters at
-#   0x00-0x1F and 0x7F.
-#
-# Notes on Mac OS Roman:
-# ----------------------
+# /Notes on Mac OS Roman:/
 #
 #   This is a legacy Mac OS encoding; in the Mac OS X Carbon and Cocoa
 #   environments, it is only supported directly in programming
@@ -117,8 +38,7 @@
 #   interpreted as associated with these glyphs; they are usually
 #   interpreted (if at all) as the control codes DC1-DC4.
 #
-# Unicode mapping issues and notes:
-# ---------------------------------
+# /Unicode mapping issues and notes:/
 #
 #   The following corporate zone Unicode character is used in this
 #   mapping:
@@ -129,20 +49,17 @@
 #   is not authorized for use without permission of Apple, and
 #   unauthorized use might constitute trademark infringement.
 #
-# Details of mapping changes in each version:
-# -------------------------------------------
+# /Details of mapping changes in each version:/
 #
 #   Changes from version n08 to version b02:
 #
-#   - Encoding changed for Mac OS 8.5; change mapping of 0xDB from
+#   * Encoding changed for Mac OS 8.5; change mapping of 0xDB from
 #   CURRENCY SIGN (U+00A4) to EURO SIGN (U+20AC).
 #
 #   Changes from version n03 to version n04:
 #
-#   - Change mapping of 0xBD from U+2126 to its canonical
+#   * Change mapping of 0xBD from U+2126 to its canonical
 #     decomposition, U+03A9.
-#
-##################
 
 0x20	0x0020	# SPACE
 0x21	0x0021	# EXCLAMATION MARK
