@@ -41,7 +41,8 @@ createModuleFromFile (sbase,sfile) (tbase,tfile) = do
                [(min,max-min+1) | min <- bmin | max <- bmax]
                | (st,end,bfirst,blast,bmin,bmax) <- ranges xml ]
   writeFile (tbase</>tfile) $ unlines $
-             ["{-# LANGUAGE MagicHash,DeriveDataTypeable #-}"]++
+             ["{- This file has been auto-generated. Do not edit it. -}"
+             ,"{-# LANGUAGE MagicHash,DeriveDataTypeable #-}"]++
                 (case description xml of
                    Nothing -> []
                    Just str -> ["{- | "++str++" -}"]) ++

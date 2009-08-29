@@ -104,7 +104,8 @@ preprocessMapping tp src trg mods name = do
                                                       Nothing -> Nothing
                                                       Just rc -> Just (rc,fromIntegral i::Word16)) trans)-}
   writeFile trg $ unlines $
-                ["{-# LANGUAGE MagicHash,DeriveDataTypeable #-}"
+                ["{- This file has been auto-generated. Do not edit it. -}"
+                ,"{-# LANGUAGE MagicHash,DeriveDataTypeable #-}"
                 ,"module "++mod++"("++name++"(..)) where"
                 ,""
                 ,"import Data.Encoding.Base"
