@@ -27,11 +27,11 @@ Flag newGHC
 Library
   if flag(splitBase)
     if flag(newGHC)
-      Build-Depends:	bytestring, base >= 3 && < 5, binary, mtl, containers, extensible-exceptions, array, template-haskell, regex-compat, ghc-prim, ghc >= 6.10
+      Build-Depends:	bytestring, base >= 3 && < 5, binary, mtl, containers, extensible-exceptions, array, regex-compat, ghc-prim, ghc >= 6.10
     else
-      Build-Depends:	bytestring, base >= 3 && < 5, binary, mtl, containers, extensible-exceptions, array, template-haskell, regex-compat, ghc < 6.10
+      Build-Depends:	bytestring, base >= 3 && < 5, binary, mtl, containers, extensible-exceptions, array, regex-compat, ghc < 6.10
   else
-    Build-Depends:	base < 3, binary, extensible-exceptions, template-haskell
+    Build-Depends:	base < 3, binary, extensible-exceptions
 
   Exposed-Modules:
     Data.Encoding
