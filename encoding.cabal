@@ -1,5 +1,5 @@
 Name:		encoding
-Version:	0.6.1
+Version:	0.6.2
 Author:		Henning Günther
 Maintainer:	h.guenther@tu-bs.de
 License:	BSD3
@@ -15,6 +15,9 @@ Extra-Source-Files:
   Data/Encoding/Preprocessor/Mapping.hs
   Data/Encoding/Preprocessor/XMLMapping.hs
   Data/Encoding/Preprocessor/XMLMappingBuilder.hs
+  Data/CharMap/Builder.hs
+  Data/Array/Static/Builder.hs
+  Data/Map/Static/Builder.hs
 
 Flag splitBase
   description:	Choose the new smaller, split-up base package.
