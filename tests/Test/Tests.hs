@@ -21,8 +21,10 @@ import Data.Encoding.JISX0208
 import Data.Encoding.ISO2022JP
 import Data.Encoding.GB18030
 import Data.Encoding.BootString
+import Data.Encoding.BIG5
+import Data.Encoding.CP437
 import Test.HUnit
-import Test.QuickCheck hiding (test)
+import Test.QuickCheck
 import Data.Char (ord)
 
 identityTests :: IO ()
@@ -62,6 +64,8 @@ identityTests = do
   quickCheck $ encodingIdentity punycode
   putStrLn "for GB18030"
   quickCheck $ encodingIdentity GB18030
+  putStrLn "for CP437"
+  quickCheck $ encodingIdentity CP437
 
 utf8Tests :: Test
 utf8Tests = TestList $ map test $ concat
@@ -275,3 +279,7 @@ gb18030Tests = TestList $ map test $
                         ,[0x83,0x38,0x96,0x37]
                         ,[0x84,0x31,0xA4,0x39]])
                ]
+
+big5Tests :: Test
+big5Tests = test (EncodingFileTest BIG5 "data/BIG5" "data/BIG5.UTF-8")
+            

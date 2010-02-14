@@ -1,7 +1,8 @@
-{-# LANGUAGE ExistentialQuantification #-}
+{-# LANGUAGE ExistentialQuantification,ImplicitParams #-}
 module Test.Tester where
 
 import Data.Encoding
+import Data.Encoding.UTF8
 import Test.HUnit
 import Data.Word
 import Data.Char
@@ -12,6 +13,8 @@ import Test.QuickCheck hiding (Testable)
 data EncodingTest
 	= forall enc. (Encoding enc,Show enc) =>
 		EncodingTest enc String [Word8]
+	| forall enc. (Encoding enc,Show enc) =>
+		EncodingFileTest enc FilePath FilePath
 	| forall enc. (Encoding enc,Show enc) =>
 		DecodingError enc [Word8] DecodingException
 	| forall enc. (Encoding enc,Show enc) =>
@@ -27,6 +30,14 @@ instance Testable EncodingTest where
            (TestCase $ decodeStrictByteStringExplicit enc (BS.pack trg)
                          @=? Right src)
           ]
+    test (EncodingFileTest e src trg)
+        = test $ do
+            str_src <- (let ?enc = e in readFile src)
+            bsrc <- LBS.readFile src
+            str_trg <- (let ?enc = UTF8 in readFile trg)
+            str_src @?= str_trg
+            --bsrc @=? (encodeLazyByteString enc str_trg)
+            
     test (DecodingError enc src ex)
         = TestLabel (show enc ++ " decoding error")
           (TestCase $ decodeStrictByteStringExplicit enc (BS.pack src) @=? Left ex)
@@ -40,35 +51,27 @@ charGen = let
     threeByte = choose (0x010000,0x10FFFF) >>= return.chr
     in frequency [(40,ascii),(30,oneByte),(20,twoByte),(10,threeByte)]
 
-instance Arbitrary Char where
-    arbitrary = charGen
-    coarbitrary x = id
-
 instance Arbitrary Word8 where
     arbitrary = choose (0x00,0xFF::Int) >>= return.fromIntegral
-    coarbitrary x = id
 
 quickCheckEncoding :: Encoding enc => enc -> IO ()
 quickCheckEncoding e = do
   quickCheck (encodingIdentity e)
   quickCheck (decodingIdentity e)
 
-encodingIdentity :: Encoding enc => enc -> String -> Property
-encodingIdentity e str
-    = trivial (null str) 
-      $ case encoded of
-          Left err -> trivial True True
-          Right res -> case decodeStrictByteStringExplicit e res of
+encodingIdentity :: Encoding enc => enc -> Property
+encodingIdentity e
+  = let gen = listOf1 (charGen `suchThat` (encodeable e))
+    in forAll gen (\str -> case encodeStrictByteStringExplicit e str of
+                      Left err -> property False
+                      Right res -> case decodeStrictByteStringExplicit e res of
                         Left err -> property False
-                        Right res' -> property (str==res')
-    where
-      encoded = encodeStrictByteStringExplicit e str
+                        Right res2 -> property (str==res2))
 
 decodingIdentity :: Encoding enc => enc -> [Word8] -> Property
 decodingIdentity e wrd
-    = trivial (null wrd)
-      $ case decoded of
-          Left err -> trivial True True
+    = classify (null wrd) "trivial" $ case decoded of
+          Left err -> label "trivial" $ property True
           Right res -> case encodeStrictByteStringExplicit e res of
                         Left err -> property False
                         Right res' -> property (bstr==res')
