@@ -21,7 +21,7 @@ import Data.Encoding.JISX0208
 import Data.Encoding.ISO2022JP
 import Data.Encoding.GB18030
 import Data.Encoding.BootString
-import Data.Encoding.BIG5
+--import Data.Encoding.BIG5
 import Data.Encoding.CP437
 import Test.HUnit
 import Test.QuickCheck
@@ -280,6 +280,6 @@ gb18030Tests = TestList $ map test $
                         ,[0x84,0x31,0xA4,0x39]])
                ]
 
-big5Tests :: Test
-big5Tests = test (EncodingFileTest BIG5 "data/BIG5" "data/BIG5.UTF-8")
+{-big5Tests :: Test
+big5Tests = test (EncodingFileTest BIG5 "data/BIG5" "data/BIG5.UTF-8")-}
             
