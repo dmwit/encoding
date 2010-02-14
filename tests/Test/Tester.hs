@@ -9,6 +9,8 @@ import Data.Char
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Lazy as LBS
 import Test.QuickCheck hiding (Testable)
+import Prelude hiding (readFile)
+import System.IO.Encoding
 
 data EncodingTest
 	= forall enc. (Encoding enc,Show enc) =>
