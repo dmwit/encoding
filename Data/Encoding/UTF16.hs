@@ -79,4 +79,4 @@ instance Encoding UTF16 where
                  return (c:cs)
         Right bom -> decode bom
     decode enc = untilM sourceEmpty (decodeChar enc)
-    encodeable _ c = c <= '\x10FFFF'
+    encodeable _ c = (c > '\xDFFF' && c <= '\x10FFFF') || c < '\xD800'
