@@ -35,7 +35,7 @@ instance StaticElement Char where
     gen c = gen (fromIntegral (ord c)::Word32)
 
 instance StaticElement (Maybe Char) where
-    extract addr i = let v = indexWord32OffAddr# addr i
+    extract addr i = let !v = indexWord32OffAddr# addr i
                      in if eqWord# v (int2Word# 4294967295#) -- -1 in Word32
                         then Nothing
                         else (if (I# (word2Int# v)) > 0x10FFFF
