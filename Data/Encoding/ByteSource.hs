@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleInstances,FlexibleContexts,MultiParamTypeClasses #-}
+{-# LANGUAGE FlexibleInstances,FlexibleContexts,MultiParamTypeClasses,CPP #-}
 module Data.Encoding.ByteSource where
 
 import Data.Encoding.Exception
@@ -121,10 +121,12 @@ instance ByteSource (State [Char]) where
       put chs
       return res
 
+#ifndef MIN_VERSION_mtl(2,0,0,0)
 instance Monad (Either DecodingException) where
     return = Right
     (Left err) >>= g = Left err
     (Right x) >>= g = g x
+#endif
 
 instance ByteSource (StateT [Char] (Either DecodingException)) where
     sourceEmpty = gets null

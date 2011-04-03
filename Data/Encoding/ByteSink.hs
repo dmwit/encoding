@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleInstances,FlexibleContexts,MultiParamTypeClasses #-}
+{-# LANGUAGE FlexibleInstances,FlexibleContexts,MultiParamTypeClasses,CPP #-}
 module Data.Encoding.ByteSink where
 
 import Data.Encoding.Exception
@@ -101,10 +101,12 @@ instance ByteSink PutME where
     pushWord64be w = PutME $ Right (putWord64be w,())
     pushWord64le w = PutME $ Right (putWord64le w,())
 
+#ifndef MIN_VERSION_mtl(2,0,0,0)
 instance Monad (Either EncodingException) where
     return x = Right x
     Left err >>= g = Left err
     Right x >>= g = g x
+#endif
 
 instance Throws EncodingException (State (Seq Char)) where
     throwException = throw
