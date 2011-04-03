@@ -1,3 +1,9 @@
+Changes from 0.6.3 to 0.6.4
+---------------------------
+
+* Throw an error when encoding non-ascii chars with ascii
+* Fix compilation with mtl-2
+
 Changes from 0.6.2 to 0.6.3
 ---------------------------
 
