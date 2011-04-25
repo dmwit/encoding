@@ -101,20 +101,15 @@ instance ByteSink PutME where
     pushWord64be w = PutME $ Right (putWord64be w,())
     pushWord64le w = PutME $ Right (putWord64le w,())
 
-#ifndef MIN_VERSION_mtl(2,0,0,0)
+#if MIN_VERSION_base(4,3,0)
+#else
 instance Monad (Either EncodingException) where
     return x = Right x
     Left err >>= g = Left err
     Right x >>= g = g x
 #endif
 
-instance Throws EncodingException (State (Seq Char)) where
-    throwException = throw
-
-instance ByteSink (State (Seq Char)) where
-    pushWord8 x = modify (|> (chr $ fromIntegral x))
-
-instance ByteSink (StateT (Seq Char) (Either EncodingException)) where
+instance (Monad m,Throws EncodingException m) => ByteSink (StateT (Seq Char) m) where
     pushWord8 x = modify (|> (chr $ fromIntegral x))
 
 newtype StrictSink a = StrictS (Ptr Word8 -> Int -> Int -> IO (a,Ptr Word8,Int,Int))

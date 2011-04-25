@@ -103,10 +103,7 @@ instance ByteSource Get where
     fetchWord64be = getWord64be
     fetchWord64le = getWord64le
 
-instance Throws DecodingException (State [Char]) where
-    throwException = throw
-
-instance ByteSource (State [Char]) where
+instance ByteSource (StateT [Char] Identity) where
     sourceEmpty = gets null
     fetchWord8 = do
       chs <- get
@@ -121,7 +118,8 @@ instance ByteSource (State [Char]) where
       put chs
       return res
 
-#ifndef MIN_VERSION_mtl(2,0,0,0)
+#if MIN_VERSION_base(4,3,0)
+#else
 instance Monad (Either DecodingException) where
     return = Right
     (Left err) >>= g = Left err
@@ -143,29 +141,15 @@ instance ByteSource (StateT [Char] (Either DecodingException)) where
       put chs
       return res
 
-instance Throws DecodingException (State BS.ByteString) where
-    throwException = throw
-
-instance ByteSource (State BS.ByteString) where
+instance (Monad m,Throws DecodingException m) => ByteSource (StateT BS.ByteString m) where
     sourceEmpty = gets BS.null
-    fetchWord8 = State (\str -> case BS.uncons str of
+    fetchWord8 = StateT (\str -> case BS.uncons str of
                                   Nothing -> throw UnexpectedEnd
-                                  Just (c,cs) -> (c,cs))
+                                  Just (c,cs) -> return (c,cs))
     fetchAhead act = do
       str <- get
       res <- act
       put str
-      return res
-
-instance ByteSource (StateT BS.ByteString (Either DecodingException)) where
-    sourceEmpty = gets BS.null
-    fetchWord8 = StateT (\str -> case BS.uncons str of
-                                  Nothing -> Left UnexpectedEnd
-                                  Just ns -> Right ns)
-    fetchAhead act = do
-      chs <- get
-      res <- act
-      put chs
       return res
 
 instance ByteSource (StateT LBS.ByteString (Either DecodingException)) where
@@ -194,3 +178,20 @@ instance ByteSource (ReaderT Handle IO) where
       res <- act
       liftIO $ hSetPosn pos
       return res
+    sourcePos = do
+      h <- ask
+      p <- liftIO $ hTell h
+      return $ Just p
+
+{-
+instance Throws DecodingException (State st) => Throws DecodingException (State (Integer,st)) where
+  throwException = throw
+
+instance ByteSource (State st) => ByteSource (State (Integer,st)) where
+  sourceEmpty = sourceEmpty
+  fetchWord8 = do
+    <- fetchWord8
+  fetchAhead = fetchAhead
+  sourcePos = do
+    (p,chs) <- get
+    return (Just p)-}
