@@ -178,10 +178,6 @@ instance ByteSource (ReaderT Handle IO) where
       res <- act
       liftIO $ hSetPosn pos
       return res
-    sourcePos = do
-      h <- ask
-      p <- liftIO $ hTell h
-      return $ Just p
 
 {-
 instance Throws DecodingException (State st) => Throws DecodingException (State (Integer,st)) where

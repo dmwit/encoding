@@ -8,6 +8,7 @@ import Data.List (find)
 import Data.Char
 import Text.XML.HaXml.XmlContent
 import Text.XML.HaXml.OneOfN
+import Text.XML.HaXml.Types
 
 testFile :: FilePath -> IO CharacterMapping
 testFile fp = fReadXml fp
@@ -130,7 +131,7 @@ instance HTypeable CharacterMapping where
     toHType x = Defined "characterMapping" [] []
 instance XmlContent CharacterMapping where
     toContents (CharacterMapping as a b c) =
-        [CElem (Elem "characterMapping" (toAttrs as) (maybe [] toContents a
+        [CElem (Elem (N "characterMapping") (toAttrs as) (maybe [] toContents a
                                                       ++ toContents b
                                                       ++ toContents c)) ()]
     parseContents = do
@@ -167,29 +168,29 @@ instance XmlAttributes CharacterMapping_Attrs where
 
 instance XmlAttrType CharacterMapping_bidiOrder where
     fromAttrToTyp n (n',v)
-        | n==n'     = translate (attr2str v)
+        | N n==n'   = translate (attr2str v)
         | otherwise = Nothing
       where translate "logical" = Just CharacterMapping_bidiOrder_logical
             translate "RTL" = Just CharacterMapping_bidiOrder_RTL
             translate "LTR" = Just CharacterMapping_bidiOrder_LTR
             translate _ = Nothing
-    toAttrFrTyp n CharacterMapping_bidiOrder_logical = Just (n, str2attr "logical")
-    toAttrFrTyp n CharacterMapping_bidiOrder_RTL = Just (n, str2attr "RTL")
-    toAttrFrTyp n CharacterMapping_bidiOrder_LTR = Just (n, str2attr "LTR")
+    toAttrFrTyp n CharacterMapping_bidiOrder_logical = Just (N n, str2attr "logical")
+    toAttrFrTyp n CharacterMapping_bidiOrder_RTL = Just (N n, str2attr "RTL")
+    toAttrFrTyp n CharacterMapping_bidiOrder_LTR = Just (N n, str2attr "LTR")
 
 instance XmlAttrType CharacterMapping_combiningOrder where
     fromAttrToTyp n (n',v)
-        | n==n'     = translate (attr2str v)
+        | N n==n'   = translate (attr2str v)
         | otherwise = Nothing
       where translate "before" = Just CharacterMapping_combiningOrder_before
             translate "after" = Just CharacterMapping_combiningOrder_after
             translate _ = Nothing
-    toAttrFrTyp n CharacterMapping_combiningOrder_before = Just (n, str2attr "before")
-    toAttrFrTyp n CharacterMapping_combiningOrder_after = Just (n, str2attr "after")
+    toAttrFrTyp n CharacterMapping_combiningOrder_before = Just (N n, str2attr "before")
+    toAttrFrTyp n CharacterMapping_combiningOrder_after = Just (N n, str2attr "after")
 
 instance XmlAttrType CharacterMapping_normalization where
     fromAttrToTyp n (n',v)
-        | n==n'     = translate (attr2str v)
+        | N n==n'   = translate (attr2str v)
         | otherwise = Nothing
       where translate "undetermined" = Just CharacterMapping_normalization_undetermined
             translate "neither" = Just CharacterMapping_normalization_neither
@@ -197,17 +198,17 @@ instance XmlAttrType CharacterMapping_normalization where
             translate "NFD" = Just CharacterMapping_normalization_NFD
             translate "NFC_NFD" = Just CharacterMapping_normalization_NFC_NFD
             translate _ = Nothing
-    toAttrFrTyp n CharacterMapping_normalization_undetermined = Just (n, str2attr "undetermined")
-    toAttrFrTyp n CharacterMapping_normalization_neither = Just (n, str2attr "neither")
-    toAttrFrTyp n CharacterMapping_normalization_NFC = Just (n, str2attr "NFC")
-    toAttrFrTyp n CharacterMapping_normalization_NFD = Just (n, str2attr "NFD")
-    toAttrFrTyp n CharacterMapping_normalization_NFC_NFD = Just (n, str2attr "NFC_NFD")
+    toAttrFrTyp n CharacterMapping_normalization_undetermined = Just (N n, str2attr "undetermined")
+    toAttrFrTyp n CharacterMapping_normalization_neither = Just (N n, str2attr "neither")
+    toAttrFrTyp n CharacterMapping_normalization_NFC = Just (N n, str2attr "NFC")
+    toAttrFrTyp n CharacterMapping_normalization_NFD = Just (N n, str2attr "NFD")
+    toAttrFrTyp n CharacterMapping_normalization_NFC_NFD = Just (N n, str2attr "NFC_NFD")
 
 instance XmlAttrType ByteSequence where
     fromAttrToTyp n (n',v)
-        | n==n' = parseByteSequence (attr2str v)
+        | N n==n' = parseByteSequence (attr2str v)
         | otherwise = Nothing
-    toAttrFrTyp n bs = Just (n, str2attr $ show bs)
+    toAttrFrTyp n bs = Just (N n, str2attr $ show bs)
 
 parseByteSequence :: String -> Maybe ByteSequence
 parseByteSequence str = do
@@ -222,9 +223,9 @@ instance Show ByteSequence where
 
 instance XmlAttrType CodePoints where
     fromAttrToTyp n (n',v)
-        | n==n' = parseCodePoints (attr2str v)
+        | N n==n' = parseCodePoints (attr2str v)
         | otherwise = Nothing
-    toAttrFrTyp n bs = Just (n, str2attr $ show bs)
+    toAttrFrTyp n bs = Just (N n, str2attr $ show bs)
 
 parseCodePoints :: String -> Maybe CodePoints
 parseCodePoints str = do
@@ -241,7 +242,7 @@ instance HTypeable Stateful_siso where
     toHType x = Defined "stateful_siso" [] []
 instance XmlContent Stateful_siso where
     toContents (Stateful_siso a b) =
-        [CElem (Elem "stateful_siso" [] (toContents a ++ toContents b)) ()]
+        [CElem (Elem (N "stateful_siso") [] (toContents a ++ toContents b)) ()]
     parseContents = do
         { e@(Elem _ [] _) <- element ["stateful_siso"]
         ; interior e $ return (Stateful_siso) `apply` parseContents
@@ -252,7 +253,7 @@ instance HTypeable History where
     toHType x = Defined "history" [] []
 instance XmlContent History where
     toContents (History a) =
-        [CElem (Elem "history" [] (toContents a)) ()]
+        [CElem (Elem (N "history") [] (toContents a)) ()]
     parseContents = do
         { e@(Elem _ [] _) <- element ["history"]
         ; interior e $ return (History) `apply` parseContents
@@ -262,7 +263,7 @@ instance HTypeable Modified where
     toHType x = Defined "modified" [] []
 instance XmlContent Modified where
     toContents (Modified as a) =
-        [CElem (Elem "modified" (toAttrs as) (toText a)) ()]
+        [CElem (Elem (N "modified") (toAttrs as) (toText a)) ()]
     parseContents = do
         { e@(Elem _ as _) <- element ["modified"]
         ; interior e $ return (Modified (fromAttrs as))
@@ -283,7 +284,7 @@ instance HTypeable Validity where
     toHType x = Defined "validity" [] []
 instance XmlContent Validity where
     toContents (Validity a) =
-        [CElem (Elem "validity" [] (toContents a)) ()]
+        [CElem (Elem (N "validity") [] (toContents a)) ()]
     parseContents = do
         { e@(Elem _ [] _) <- element ["validity"]
         ; interior e $ return (Validity) `apply` parseContents
@@ -293,7 +294,7 @@ instance HTypeable State where
     toHType x = Defined "state" [] []
 instance XmlContent State where
     toContents as =
-        [CElem (Elem "state" (toAttrs as) []) ()]
+        [CElem (Elem (N "state") (toAttrs as) []) ()]
     parseContents = do
         { (Elem _ as []) <- element ["state"]
         ; return (fromAttrs as)
@@ -319,7 +320,7 @@ instance HTypeable Assignments where
     toHType x = Defined "assignments" [] []
 instance XmlContent Assignments where
     toContents (Assignments as a b c d e) =
-        [CElem (Elem "assignments" (toAttrs as) (concatMap toContents a ++
+        [CElem (Elem (N "assignments") (toAttrs as) (concatMap toContents a ++
                                                  concatMap toContents b ++ concatMap toContents c ++
                                                  concatMap toContents d ++
                                                  concatMap toContents e)) ()]
@@ -345,7 +346,7 @@ instance HTypeable A where
     toHType x = Defined "a" [] []
 instance XmlContent A where
     toContents as =
-        [CElem (Elem "a" (toAttrs as) []) ()]
+        [CElem (Elem (N "a") (toAttrs as) []) ()]
     parseContents = do
         { (Elem _ as []) <- element ["a"]
         ; return (fromAttrs as)
@@ -368,7 +369,7 @@ instance HTypeable Fub where
     toHType x = Defined "fub" [] []
 instance XmlContent Fub where
     toContents as =
-        [CElem (Elem "fub" (toAttrs as) []) ()]
+        [CElem (Elem (N "fub") (toAttrs as) []) ()]
     parseContents = do
         { (Elem _ as []) <- element ["fub"]
         ; return (fromAttrs as)
@@ -396,7 +397,7 @@ instance HTypeable Fbu where
     toHType x = Defined "fbu" [] []
 instance XmlContent Fbu where
     toContents as =
-        [CElem (Elem "fbu" (toAttrs as) []) ()]
+        [CElem (Elem (N "fbu") (toAttrs as) []) ()]
     parseContents = do
         { (Elem _ as []) <- element ["fbu"]
         ; return (fromAttrs as)
@@ -418,7 +419,7 @@ instance HTypeable Sub1 where
     toHType x = Defined "sub1" [] []
 instance XmlContent Sub1 where
     toContents as =
-        [CElem (Elem "sub1" (toAttrs as) []) ()]
+        [CElem (Elem (N "sub1") (toAttrs as) []) ()]
     parseContents = do
         { (Elem _ as []) <- element ["sub1"]
         ; return (fromAttrs as)
@@ -440,7 +441,7 @@ instance HTypeable Range where
     toHType x = Defined "range" [] []
 instance XmlContent Range where
     toContents as =
-        [CElem (Elem "range" (toAttrs as) []) ()]
+        [CElem (Elem (N "range") (toAttrs as) []) ()]
     parseContents = do
         { (Elem _ as []) <- element ["range"]
         ; return (fromAttrs as)
@@ -470,7 +471,7 @@ instance HTypeable Iso2022 where
     toHType x = Defined "iso2022" [] []
 instance XmlContent Iso2022 where
     toContents (Iso2022 a b) =
-        [CElem (Elem "iso2022" [] (maybe [] toContents a ++
+        [CElem (Elem (N "iso2022") [] (maybe [] toContents a ++
                                    toContents b)) ()]
     parseContents = do
         { e@(Elem _ [] _) <- element ["iso2022"]
@@ -482,7 +483,7 @@ instance HTypeable Default2022 where
     toHType x = Defined "default2022" [] []
 instance XmlContent Default2022 where
     toContents as =
-        [CElem (Elem "default2022" (toAttrs as) []) ()]
+        [CElem (Elem (N "default2022") (toAttrs as) []) ()]
     parseContents = do
         { (Elem _ as []) <- element ["default2022"]
         ; return (fromAttrs as)
@@ -500,7 +501,7 @@ instance HTypeable Escape where
     toHType x = Defined "escape" [] []
 instance XmlContent Escape where
     toContents as =
-        [CElem (Elem "escape" (toAttrs as) []) ()]
+        [CElem (Elem (N "escape") (toAttrs as) []) ()]
     parseContents = do
         { (Elem _ as []) <- element ["escape"]
         ; return (fromAttrs as)
@@ -520,7 +521,7 @@ instance HTypeable Si where
     toHType x = Defined "si" [] []
 instance XmlContent Si where
     toContents (Si a) =
-        [CElem (Elem "si" [] (toContents a)) ()]
+        [CElem (Elem (N "si") [] (toContents a)) ()]
     parseContents = do
         { e@(Elem _ [] _) <- element ["si"]
         ; interior e $ return (Si) `apply` parseContents
@@ -530,7 +531,7 @@ instance HTypeable So where
     toHType x = Defined "so" [] []
 instance XmlContent So where
     toContents (So a) =
-        [CElem (Elem "so" [] (toContents a)) ()]
+        [CElem (Elem (N "so") [] (toContents a)) ()]
     parseContents = do
         { e@(Elem _ [] _) <- element ["so"]
         ; interior e $ return (So) `apply` parseContents
@@ -540,7 +541,7 @@ instance HTypeable Ss2 where
     toHType x = Defined "ss2" [] []
 instance XmlContent Ss2 where
     toContents (Ss2 a) =
-        [CElem (Elem "ss2" [] (toContents a)) ()]
+        [CElem (Elem (N "ss2") [] (toContents a)) ()]
     parseContents = do
         { e@(Elem _ [] _) <- element ["ss2"]
         ; interior e $ return (Ss2) `apply` parseContents
@@ -550,7 +551,7 @@ instance HTypeable Ss3 where
     toHType x = Defined "ss3" [] []
 instance XmlContent Ss3 where
     toContents (Ss3 a) =
-        [CElem (Elem "ss3" [] (toContents a)) ()]
+        [CElem (Elem (N "ss3") [] (toContents a)) ()]
     parseContents = do
         { e@(Elem _ [] _) <- element ["ss3"]
         ; interior e $ return (Ss3) `apply` parseContents
@@ -560,7 +561,7 @@ instance HTypeable Designator where
     toHType x = Defined "designator" [] []
 instance XmlContent Designator where
     toContents as =
-        [CElem (Elem "designator" (toAttrs as) []) ()]
+        [CElem (Elem (N "designator") (toAttrs as) []) ()]
     parseContents = do
         { (Elem _ as []) <- element ["designator"]
         ; return (fromAttrs as)

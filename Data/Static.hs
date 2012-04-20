@@ -1,4 +1,4 @@
-{-# LANGUAGE MagicHash,FlexibleInstances #-}
+{-# LANGUAGE MagicHash,FlexibleInstances,BangPatterns #-}
 module Data.Static where
 
 import GHC.Exts
