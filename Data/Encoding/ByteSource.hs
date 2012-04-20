@@ -178,16 +178,3 @@ instance ByteSource (ReaderT Handle IO) where
       res <- act
       liftIO $ hSetPosn pos
       return res
-
-{-
-instance Throws DecodingException (State st) => Throws DecodingException (State (Integer,st)) where
-  throwException = throw
-
-instance ByteSource (State st) => ByteSource (State (Integer,st)) where
-  sourceEmpty = sourceEmpty
-  fetchWord8 = do
-    <- fetchWord8
-  fetchAhead = fetchAhead
-  sourcePos = do
-    (p,chs) <- get
-    return (Just p)-}
