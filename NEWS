@@ -1,3 +1,10 @@
+Changes from 0.6.5 to 0.6.7
+---------------------------
+
+* Skipped version 0.6.6 due to rogue upload on Hackage
+* GHC-7 and HaXml-1.22 compatibility
+* add -systemEncoding flag for Windows builds
+
 Changes from 0.6.4 to 0.6.5
 ---------------------------
 
