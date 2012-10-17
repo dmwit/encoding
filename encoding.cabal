@@ -1,7 +1,7 @@
 Name:		encoding
-Version:	0.6.5
+Version:	0.6.7
 Author:		Henning Günther
-Maintainer:	h.guenther@tu-bs.de
+Maintainer:	daniel@wagner-home.com
 License:	BSD3
 Synopsis:	A library for various character encodings
 Description:
