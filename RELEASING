@@ -1,0 +1,14 @@
+On each release:
+* update NEWS
+* bump the version number in the .cabal file (including in the "this" repository spec)
+* cabal upload a release tarball
+* darcs tag with the version number
+
+To build a release tarball:
+cabal configure && ./dist/setup/setup sdist
+tar xf dist/encoding-version.tar.gz
+rm -r encoding-version/dist
+tar cf dist/encoding-version.tar encoding-version
+rm -r encoding-version
+gzip -f dist/encoding-version.tar
+cabal upload dist/encoding-version.tar
