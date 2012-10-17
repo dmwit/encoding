@@ -5,7 +5,8 @@ On each release:
 * darcs tag with the version number
 
 To build a release tarball:
-cabal configure && ./dist/setup/setup sdist
+cabal configure
+./dist/setup/setup sdist
 tar xf dist/encoding-version.tar.gz
 rm -r encoding-version/dist
 tar cf dist/encoding-version.tar encoding-version
