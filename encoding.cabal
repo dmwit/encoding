@@ -18,11 +18,15 @@ Extra-Source-Files:
   Data/CharMap/Builder.hs
   Data/Array/Static/Builder.hs
   Data/Map/Static/Builder.hs
+  system_encoding.h
+  system_encoding.c
 
 Flag splitBase
   description:	Choose the new smaller, split-up base package.
 Flag newGHC
   description: Use ghc version > 6.10
+Flag systemEncoding
+  description: Provide the getSystemEncoding action to query the locale.
 
 Library
   Build-Depends:	binary, extensible-exceptions, HaXml >= 1.22 && < 1.24
@@ -34,6 +38,8 @@ Library
       Build-Depends:	ghc < 6.10
   else
     Build-Depends:	base < 3
+
+  Extensions: CPP
 
   Exposed-Modules:
     Data.Encoding
@@ -102,9 +108,11 @@ Library
     Data.Map.Static
     Data.Static
     Data.CharMap
-  Includes:
-    system_encoding.h
-  Install-Includes:
-    system_encoding.h
-  C-Sources:
-    system_encoding.c
+  if flag(systemEncoding)
+    Includes:
+      system_encoding.h
+    Install-Includes:
+      system_encoding.h
+    C-Sources:
+      system_encoding.c
+    CPP-Options: -DSYSTEM_ENCODING

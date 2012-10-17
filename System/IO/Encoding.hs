@@ -131,12 +131,19 @@ interact f = do
   line <- hGetLine stdin
   hPutStrLn stdout (f line)
 
+#ifdef SYSTEM_ENCODING
 foreign import ccall "system_encoding.h get_system_encoding"
 	get_system_encoding :: IO CString
+#endif
 
--- | Returns the encoding used on the current system.
+-- | Returns the encoding used on the current system. Currently only supported
+-- on Linux-alikes.
 getSystemEncoding :: IO DynEncoding
 getSystemEncoding = do
+#ifdef SYSTEM_ENCODING
 	enc <- get_system_encoding
 	str <- peekCString enc
 	return $ encodingFromString str
+#else
+	error "getSystemEncoding is not supported on this platform"
+#endif
