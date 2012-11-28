@@ -53,9 +53,6 @@ charGen = let
     threeByte = choose (0x010000,0x10FFFF) >>= return.chr
     in frequency [(40,ascii),(30,oneByte),(20,twoByte),(10,threeByte)]
 
-instance Arbitrary Word8 where
-    arbitrary = choose (0x00,0xFF::Int) >>= return.fromIntegral
-
 quickCheckEncoding :: Encoding enc => enc -> IO ()
 quickCheckEncoding e = do
   quickCheck (encodingIdentity e)
