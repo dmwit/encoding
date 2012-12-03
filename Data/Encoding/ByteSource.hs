@@ -108,7 +108,7 @@ instance ByteSource (StateT [Char] Identity) where
     fetchWord8 = do
       chs <- get
       case chs of
-        [] -> throw UnexpectedEnd
+        [] -> throwException UnexpectedEnd
         c:cs -> do
           put cs
           return (fromIntegral $ ord c)
@@ -144,7 +144,7 @@ instance ByteSource (StateT [Char] (Either DecodingException)) where
 instance (Monad m,Throws DecodingException m) => ByteSource (StateT BS.ByteString m) where
     sourceEmpty = gets BS.null
     fetchWord8 = StateT (\str -> case BS.uncons str of
-                                  Nothing -> throw UnexpectedEnd
+                                  Nothing -> throwException UnexpectedEnd
                                   Just (c,cs) -> return (c,cs))
     fetchAhead act = do
       str <- get
