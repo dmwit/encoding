@@ -10,6 +10,7 @@ import System.Random
 import Data.Encoding.ISO2022JP
 --main = generate ISO2022JP
 main = test ISO2022JP
+-- BEWARE! These things are _very_ memory-hungry if you don't compile with optimizations.
 -- end example
 
 randomRepeat f max = randomRIO (0, max) >>= flip replicateM f
