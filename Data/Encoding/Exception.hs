@@ -11,7 +11,7 @@ import Control.Monad.Identity
 data EncodingException
     = HasNoRepresentation Char	-- ^ Thrown if a specific character
 				--   is not representable in an encoding.
-    deriving (Eq,Show,Typeable)
+    deriving (Eq,Ord,Show,Read,Typeable)
 
 instance Exception EncodingException
 
@@ -25,6 +25,6 @@ data DecodingException
     | OutOfRange		-- ^ the decoded value was out of the unicode range
     | IllegalRepresentation [Word8]	-- ^ The character sequence encodes a
 					--   character, but is illegal.
-    deriving (Eq,Show,Typeable)
+    deriving (Eq,Ord,Show,Read,Typeable)
 
 instance Exception DecodingException
