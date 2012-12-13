@@ -6,7 +6,9 @@ import Data.Encoding.Exception
 import Data.Bits
 import Data.Binary.Get
 import Data.Char
+import Data.Maybe
 import Data.Word
+import Control.Applicative as A
 import Control.Monad.State
 import Control.Monad.Identity
 import Control.Monad.Reader
@@ -19,7 +21,9 @@ import System.IO
 class (Monad m,Throws DecodingException m) => ByteSource m where
     sourceEmpty :: m Bool
     fetchWord8 :: m Word8
-    fetchAhead :: m a -> m a
+    -- 'fetchAhead act' should return the same thing 'act' does, but should
+    -- only consume input if 'act' returns a 'Just' value
+    fetchAhead :: m (Maybe a) -> m (Maybe a)
     fetchWord16be :: m Word16
     fetchWord16be = do
       w1 <- fetchWord8
@@ -95,13 +99,32 @@ instance Throws DecodingException Get where
 instance ByteSource Get where
     sourceEmpty = isEmpty
     fetchWord8 = getWord8
-    fetchAhead = lookAhead
+#if MIN_VERSION_binary(0,6,0)
+    fetchAhead act = (do
+        res <- act
+        case res of
+            Nothing -> A.empty
+            Just a  -> return res
+        ) <|> return Nothing
+#else
+    fetchAhead act = do
+        res <- lookAhead act
+        case res of
+            Nothing -> return Nothing
+            Just a  -> act
+#endif
     fetchWord16be = getWord16be
     fetchWord16le = getWord16le
     fetchWord32be = getWord32be
     fetchWord32le = getWord32le
     fetchWord64be = getWord64be
     fetchWord64le = getWord64le
+
+fetchAheadState act = do
+    chs <- get
+    res <- act
+    when (isNothing res) (put chs)
+    return res
 
 instance ByteSource (StateT [Char] Identity) where
     sourceEmpty = gets null
@@ -112,11 +135,7 @@ instance ByteSource (StateT [Char] Identity) where
         c:cs -> do
           put cs
           return (fromIntegral $ ord c)
-    fetchAhead act = do
-      chs <- get
-      res <- act
-      put chs
-      return res
+    fetchAhead = fetchAheadState
 
 #if MIN_VERSION_base(4,3,0)
 #else
@@ -135,33 +154,21 @@ instance ByteSource (StateT [Char] (Either DecodingException)) where
         c:cs -> do
           put cs
           return (fromIntegral $ ord c)
-    fetchAhead act = do
-      chs <- get
-      res <- act
-      put chs
-      return res
+    fetchAhead = fetchAheadState
 
 instance (Monad m,Throws DecodingException m) => ByteSource (StateT BS.ByteString m) where
     sourceEmpty = gets BS.null
     fetchWord8 = StateT (\str -> case BS.uncons str of
                                   Nothing -> throwException UnexpectedEnd
                                   Just (c,cs) -> return (c,cs))
-    fetchAhead act = do
-      str <- get
-      res <- act
-      put str
-      return res
+    fetchAhead = fetchAheadState
 
 instance ByteSource (StateT LBS.ByteString (Either DecodingException)) where
     sourceEmpty = gets LBS.null
     fetchWord8 = StateT (\str -> case LBS.uncons str of
                                   Nothing -> Left UnexpectedEnd
                                   Just ns -> Right ns)
-    fetchAhead act = do
-      chs <- get
-      res <- act
-      put chs
-      return res
+    fetchAhead = fetchAheadState
 
 instance ByteSource (ReaderT Handle IO) where
     sourceEmpty = do
@@ -176,5 +183,5 @@ instance ByteSource (ReaderT Handle IO) where
       h <- ask
       pos <- liftIO $ hGetPosn h
       res <- act
-      liftIO $ hSetPosn pos
+      when (isNothing res) (liftIO $ hSetPosn pos)
       return res

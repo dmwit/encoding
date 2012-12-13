@@ -1,5 +1,5 @@
 Name:		encoding
-Version:	0.6.7.2
+Version:	0.7
 Author:		Henning Günther
 Maintainer:	daniel@wagner-home.com
 License:	BSD3
@@ -24,8 +24,6 @@ Extra-Source-Files:
 
 Flag splitBase
   description:	Choose the new smaller, split-up base package.
-Flag newGHC
-  description: Use ghc version > 6.10
 Flag systemEncoding
   description: Provide the getSystemEncoding action to query the locale.
 
@@ -36,16 +34,14 @@ Source-Repository head
 Source-Repository this
   Type:			darcs
   Location:		http://code.haskell.org/encoding
-  Tag:			0.6.7.1
+  Tag:			0.7
 
 Library
-  Build-Depends:	binary < 0.6, extensible-exceptions, HaXml >= 1.22 && < 1.24
+  Build-Depends:	binary < 0.7, extensible-exceptions, HaXml >= 1.22 && < 1.24
   if flag(splitBase)
     Build-Depends:	bytestring, base >= 3 && < 5, mtl, containers, array, regex-compat
-    if flag(newGHC)
-      Build-Depends:	ghc-prim, ghc >= 6.10
-    else
-      Build-Depends:	ghc < 6.10
+    if impl(ghc >= 6.10)
+      Build-Depends:	ghc-prim
   else
     Build-Depends:	base < 3
 

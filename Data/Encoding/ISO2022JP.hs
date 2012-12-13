@@ -26,11 +26,10 @@ instance Encoding ISO2022JP where
     encodeable _ c = encodeable ASCII c || encodeable JISX0201 c || encodeable JISX0208 c
 
 instance ISO2022 ISO2022JP where
-    readEscape _ = do
-      w <- fetchAhead fetchWord8
+    readEscape _ = fetchAhead $ do
+      w <- fetchWord8
       if w == 27
         then (do
-               fetchWord8
                w2 <- fetchWord8
                w3 <- fetchWord8
                case w2 of
