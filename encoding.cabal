@@ -12,7 +12,7 @@ Homepage:	http://code.haskell.org/encoding/
 Cabal-Version:	>=1.6
 Build-Type:	Custom
 Extra-Source-Files:
-  NEWS
+  CHANGELOG
   Data/Encoding/Preprocessor/Mapping.hs
   Data/Encoding/Preprocessor/XMLMapping.hs
   Data/Encoding/Preprocessor/XMLMappingBuilder.hs
