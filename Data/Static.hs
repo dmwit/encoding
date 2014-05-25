@@ -1,4 +1,4 @@
-{-# LANGUAGE MagicHash,FlexibleInstances,BangPatterns #-}
+{-# LANGUAGE MagicHash,FlexibleInstances,BangPatterns,CPP #-}
 module Data.Static where
 
 import GHC.Exts
@@ -36,7 +36,11 @@ instance StaticElement Char where
 
 instance StaticElement (Maybe Char) where
     extract addr i = let !v = indexWord32OffAddr# addr i
+#if __GLASGOW_HASKELL__ >= 708
+                     in if isTrue# (eqWord# v (int2Word# 4294967295#)) -- -1 in Word32
+#else
                      in if eqWord# v (int2Word# 4294967295#) -- -1 in Word32
+#endif
                         then Nothing
                         else (if (I# (word2Int# v)) > 0x10FFFF
                               then error (show (I# (word2Int# v))++" is not a valid char ("++show (I# i)++")")
