@@ -1,5 +1,5 @@
 On each release:
-* update NEWS
+* update CHANGELOG
 * bump the version number in the .cabal file (including in the "this" repository spec)
 * cabal upload a release tarball
 * darcs tag with the version number
