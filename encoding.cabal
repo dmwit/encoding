@@ -1,5 +1,5 @@
 Name:		encoding
-Version:	0.7.0.1
+Version:	0.7.0.2
 Author:		Henning Günther
 Maintainer:	daniel@wagner-home.com
 License:	BSD3
@@ -34,7 +34,7 @@ Source-Repository head
 Source-Repository this
   Type:			darcs
   Location:		http://code.haskell.org/encoding
-  Tag:			0.7.0.1
+  Tag:			0.7.0.2
 
 Library
   Build-Depends:	binary < 0.8, extensible-exceptions, HaXml >= 1.22 && < 1.25
