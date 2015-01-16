@@ -80,6 +80,13 @@ instance ByteSink PutM where
 
 newtype PutME a = PutME (Either EncodingException (PutM (),a))
 
+instance Functor PutME where
+  fmap = liftM
+
+instance Applicative PutME where
+  pure = return
+  (<*>) = ap
+
 instance Monad PutME where
     return x = PutME $ Right (return (),x)
     (PutME x) >>= g = PutME $ do
@@ -114,6 +121,13 @@ instance (Monad m,Throws EncodingException m) => ByteSink (StateT (Seq Char) m) 
 
 newtype StrictSink a = StrictS (Ptr Word8 -> Int -> Int -> IO (a,Ptr Word8,Int,Int))
 
+instance Functor StrictSink where
+  fmap = liftM
+
+instance Applicative StrictSink where
+  pure = return
+  (<*>) = ap
+
 instance Monad StrictSink where
     return x = StrictS $ \cstr pos max -> return (x,cstr,pos,max)
     (StrictS f) >>= g = StrictS (\cstr pos max -> do
@@ -139,6 +153,13 @@ instance ByteSink StrictSink where
                           )
 
 newtype StrictSinkE a = StrictSinkE (StrictSink (Either EncodingException a))
+
+instance Functor StrictSinkE where
+  fmap = liftM
+
+instance Applicative StrictSinkE where
+  pure = return
+  (<*>) = ap
 
 instance Monad StrictSinkE where
     return = StrictSinkE . return . Right
@@ -166,6 +187,13 @@ createStrict :: StrictSink a -> (a,BS.ByteString)
 createStrict sink = createStrictWithLen sink 32
 
 newtype StrictSinkExplicit a = StrictSinkExplicit  (StrictSink (Either EncodingException a))
+
+instance Functor StrictSinkExplicit where
+  fmap = liftM
+
+instance Applicative StrictSinkExplicit where
+  pure = return
+  (<*>) = ap
 
 instance Monad StrictSinkExplicit where
     return = (StrictSinkExplicit).return.Right
