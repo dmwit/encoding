@@ -1,5 +1,5 @@
 Name:		encoding
-Version:	0.7.0.3
+Version:	0.8
 Author:		Henning Günther
 Maintainer:	daniel@wagner-home.com
 License:	BSD3
@@ -37,7 +37,7 @@ Source-Repository this
   Tag:			0.7.0.2
 
 Library
-  Build-Depends:	binary < 0.8, extensible-exceptions, HaXml >= 1.22 && < 1.25
+  Build-Depends:	binary < 0.8, extensible-exceptions, HaXml >= 1.22 && < 1.26
   if flag(splitBase)
     Build-Depends:	bytestring, base >= 3 && < 5, mtl, containers, array, regex-compat
     if impl(ghc >= 6.10)
