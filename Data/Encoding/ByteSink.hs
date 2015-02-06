@@ -11,6 +11,7 @@ import Data.Word
 import Data.Foldable (toList)
 import Control.Throws
 import Control.Exception.Extensible
+import Control.Applicative
 import Control.Monad.State
 import Control.Monad.Identity
 import Control.Monad.Reader
