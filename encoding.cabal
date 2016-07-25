@@ -91,6 +91,7 @@ Library
     Data.Encoding.JISX0212
     Data.Encoding.ISO2022
     Data.Encoding.ISO2022JP
+    Data.Encoding.ShiftJIS
     Data.Encoding.CP437
     Data.Encoding.CP737
     Data.Encoding.CP775
@@ -107,6 +108,7 @@ Library
     Data.Encoding.CP866
     Data.Encoding.CP869
     Data.Encoding.CP874
+    Data.Encoding.CP932
     System.IO.Encoding
   Other-Modules:
     Data.Encoding.Base

@@ -76,6 +76,7 @@ import Data.Encoding.MacOSRoman
 import Data.Encoding.JISX0201
 import Data.Encoding.JISX0208
 import Data.Encoding.ISO2022JP
+import Data.Encoding.ShiftJIS
 import Data.Encoding.CP437
 import Data.Encoding.CP737
 import Data.Encoding.CP775
@@ -92,6 +93,7 @@ import Data.Encoding.CP865
 import Data.Encoding.CP866
 import Data.Encoding.CP869
 import Data.Encoding.CP874
+import Data.Encoding.CP932
 import Data.Char
 import Text.Regex
 
@@ -327,6 +329,9 @@ encodingFromStringExplicit codeName = case (normalizeEncoding codeName) of
     "jis_x_0208"         -> Just $ DynEncoding JISX0208
     -- ISO 2022-JP
     "iso_2022_jp"        -> Just $ DynEncoding ISO2022JP
+    -- Shift JIS
+    "shift_jis"          -> Just $ DynEncoding ShiftJIS
+    "sjis"               -> Just $ DynEncoding ShiftJIS
     -- MSDOS codepages
     "cp437"              -> Just $ DynEncoding CP437
     "cp737"              -> Just $ DynEncoding CP737
@@ -344,6 +349,7 @@ encodingFromStringExplicit codeName = case (normalizeEncoding codeName) of
     "cp866"              -> Just $ DynEncoding CP866
     "cp869"              -> Just $ DynEncoding CP869
     "cp874"              -> Just $ DynEncoding CP874
+    "cp932"              -> Just $ DynEncoding CP932
     -- defaults to nothing
     _                    -> Nothing
   where
