@@ -26,13 +26,13 @@ Flag systemEncoding
   description: Provide the getSystemEncoding action to query the locale.
 
 Source-Repository head
-  Type:			darcs
-  Location:		http://code.haskell.org/encoding
+  Type:         git
+  Location:     http://github.com/dmwit/encoding
 
 Source-Repository this
-  Type:			darcs
-  Location:		http://code.haskell.org/encoding
-  Tag:			0.8.1
+  Type:         git
+  Location:     http://github.com/dmwit/encoding
+  Tag:          0.8.1-r1
 
 Custom-Setup
   Setup-Depends: base >=3 && <5,
