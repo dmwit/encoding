@@ -6,7 +6,7 @@ License:	BSD3
 License-File:   LICENSE
 Synopsis:	A library for various character encodings
 Description:
-	Haskell has excellect handling of unicode, the Char type covers all unicode chars. Unfortunatly, there's no possibility to read or write something to the outer world in an encoding other than ascii due to the lack of support for encodings. This library should help with that.
+	Haskell has excellect handling of unicode, the Char type covers all unicode chars. Unfortunately, there's no possibility to read or write something to the outer world in an encoding other than ascii due to the lack of support for encodings. This library should help with that.
 Category:	Codec
 Homepage:	http://code.haskell.org/encoding/
 Cabal-Version:	>=1.6
