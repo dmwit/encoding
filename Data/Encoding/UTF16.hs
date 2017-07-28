@@ -18,9 +18,9 @@ import Data.Typeable
 import Data.Word
 
 data UTF16
-    = UTF16	-- ^ Decodes big and little endian, encodes big endian.
-    | UTF16BE	-- ^ Big endian decoding and encoding, fails if the string isn\'t actually big endian.
-    | UTF16LE	-- ^ Little endian decoding and encoding.
+    = UTF16   -- ^ Decodes big and little endian, encodes big endian.
+    | UTF16BE -- ^ Big endian decoding and encoding, fails if the string isn\'t actually big endian.
+    | UTF16LE -- ^ Little endian decoding and encoding.
       deriving (Eq,Show,Typeable)
 
 readBOM :: ByteSource m => m (Either Char UTF16)

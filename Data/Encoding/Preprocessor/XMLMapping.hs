@@ -47,14 +47,14 @@ data CharacterMapping_normalization = CharacterMapping_normalization_undetermine
                                     deriving (Eq,Show)
 data Stateful_siso = Stateful_siso Validity Validity
                    deriving (Eq,Show)
-newtype History = History (List1 Modified) 		deriving (Eq,Show)
+newtype History = History (List1 Modified) deriving (Eq,Show)
 data Modified = Modified Modified_Attrs String
               deriving (Eq,Show)
 data Modified_Attrs = Modified_Attrs
     { modifiedVersion :: String
     , modifiedDate :: String
     } deriving (Eq,Show)
-newtype Validity = Validity (List1 State) 		deriving (Eq,Show)
+newtype Validity = Validity (List1 State) deriving (Eq,Show)
 data State = State
     { stateType :: String
     , stateNext :: String
@@ -112,10 +112,10 @@ data Escape = Escape
     { escapeSequence :: String
     , escapeName :: String
     } deriving (Eq,Show)
-newtype Si = Si (List1 Designator) 		deriving (Eq,Show)
-newtype So = So (List1 Designator) 		deriving (Eq,Show)
-newtype Ss2 = Ss2 (List1 Designator) 		deriving (Eq,Show)
-newtype Ss3 = Ss3 (List1 Designator) 		deriving (Eq,Show)
+newtype Si = Si (List1 Designator) deriving (Eq,Show)
+newtype So = So (List1 Designator) deriving (Eq,Show)
+newtype Ss2 = Ss2 (List1 Designator) deriving (Eq,Show)
+newtype Ss3 = Ss3 (List1 Designator) deriving (Eq,Show)
 data Designator = Designator
     { designatorSequence :: String
     , designatorName :: String

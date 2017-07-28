@@ -16,10 +16,10 @@ import Data.Typeable
 
 
 data UTF32
-	= UTF32		-- ^ Detects big or little endian through the use of the BOM (Byte Order Mask) character. Defaults to big endian if not present.
-	| UTF32BE	-- ^ Encodes and decodes using the big endian encoding.
-	| UTF32LE	-- ^ Encodes and decodes using the little endian encoding.
-	deriving (Eq,Show,Typeable)
+    = UTF32      -- ^ Detects big or little endian through the use of the BOM (Byte Order Mask) character. Defaults to big endian if not present.
+    | UTF32BE    -- ^ Encodes and decodes using the big endian encoding.
+    | UTF32LE    -- ^ Encodes and decodes using the little endian encoding.
+    deriving (Eq,Show,Typeable)
 
 instance Encoding UTF32 where
     encodeChar UTF32LE ch = pushWord32le (fromIntegral $ ord ch)

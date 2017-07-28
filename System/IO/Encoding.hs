@@ -67,17 +67,23 @@ import Control.Monad.Reader (runReaderT)
 --   encoding.
 hGetContents :: (Encoding e,?enc :: e) => Handle -> IO String
 hGetContents h = do
-	str <- LBS.hGetContents h
-	return $ decodeLazyByteString ?enc str
+    str <- LBS.hGetContents h
+    return $ decodeLazyByteString ?enc str
 
+-- | Like the normal 'System.IO.getContents', but decodes the input using an
+--   encoding.
 getContents :: (Encoding e,?enc :: e) => IO String
 getContents = do
     str <- LBS.getContents
     return $ decodeLazyByteString ?enc str
 
+-- | Like the normal 'System.IO.putStr', but decodes the input using an
+--   encoding.
 putStr :: (Encoding e,?enc :: e) => String -> IO ()
 putStr = hPutStr stdout
 
+-- | Like the normal 'System.IO.putStrLn', but decodes the input using an
+--   encoding.
 putStrLn :: (Encoding e,?enc :: e) => String -> IO ()
 putStrLn = hPutStrLn stdout
 
@@ -86,46 +92,72 @@ putStrLn = hPutStrLn stdout
 hPutStr :: (Encoding e,?enc :: e) => Handle -> String -> IO ()
 hPutStr h str = LBS.hPut h (encodeLazyByteString ?enc str)
 
+-- | Like the normal 'System.IO.hPutStrLn', but decodes the input using an
+--   encoding.
 hPutStrLn :: (Encoding e,?enc :: e) => Handle -> String -> IO ()
 hPutStrLn h str = do
     LBS.hPut h (encodeLazyByteString ?enc str)
     LBS.hPut h (encodeLazyByteString ?enc "\n")
 
+-- | Like the normal 'System.IO.print', but decodes the input using an
+--   encoding.
 print :: (Encoding e,Show a,?enc :: e) => a -> IO ()
 print = hPrint stdout
 
+-- | Like the normal 'System.IO.hPrint', but decodes the input using an
+--   encoding.
 hPrint :: (Encoding e,Show a,?enc :: e) => Handle -> a -> IO ()
 hPrint h x = hPutStrLn h (show x)
 
+-- | Like the normal 'System.IO.readFile', but decodes the input using an
+--   encoding.
 readFile :: (Encoding e,?enc :: e) => FilePath -> IO String
 readFile fn = LBS.readFile fn >>= return.(decodeLazyByteString ?enc)
 
+-- | Like the normal 'System.IO.writeFile', but decodes the input using an
+--   encoding.
 writeFile :: (Encoding e,?enc :: e) => FilePath -> String -> IO ()
 writeFile fn str = LBS.writeFile fn $ encodeLazyByteString ?enc str
 
+-- | Like the normal 'System.IO.appendFile', but decodes the input using an
+--   encoding.
 appendFile :: (Encoding e,?enc :: e) => FilePath -> String -> IO ()
 appendFile fn str = LBS.appendFile fn $ encodeLazyByteString ?enc str
 
+-- | Like the normal 'System.IO.getChar', but decodes the input using an
+--   encoding.
 getChar :: (Encoding e,?enc :: e) => IO Char
 getChar = hGetChar stdin
 
+-- | Like the normal 'System.IO.hGetChar', but decodes the input using an
+--   encoding.
 hGetChar :: (Encoding e,?enc :: e) => Handle -> IO Char
 hGetChar h = runReaderT (decodeChar ?enc) h
 
+-- | Like the normal 'System.IO.getLine', but decodes the input using an
+--   encoding.
 getLine :: (Encoding e,?enc :: e) => IO String
 getLine = hGetLine stdin
 
+-- | Like the normal 'System.IO.hGetLine', but decodes the input using an
+--   encoding.
 hGetLine :: (Encoding e,?enc :: e) => Handle -> IO String
 hGetLine h = do
   line <- BS.hGetLine h
   return $ decodeStrictByteString ?enc line
 
+-- | Like the normal 'System.IO.putChar', but decodes the input using an
+--   encoding.
 putChar :: (Encoding e,?enc :: e) => Char -> IO ()
 putChar = hPutChar stdout
 
+-- | Like the normal 'System.IO.hPutChar', but decodes the input using an
+--   encoding.
 hPutChar :: (Encoding e,?enc :: e) => Handle -> Char -> IO ()
 hPutChar h c = runReaderT (encodeChar ?enc c) h
 
+-- | Like the normal 'System.IO.interact', but decodes the input using an
+--   encoding.
 interact :: (Encoding e,?enc :: e) => (String -> String) -> IO ()
 interact f = do
   line <- hGetLine stdin
@@ -133,7 +165,7 @@ interact f = do
 
 #ifdef SYSTEM_ENCODING
 foreign import ccall "system_encoding.h get_system_encoding"
-	get_system_encoding :: IO CString
+    get_system_encoding :: IO CString
 #endif
 
 -- | Returns the encoding used on the current system. Currently only supported
@@ -141,9 +173,9 @@ foreign import ccall "system_encoding.h get_system_encoding"
 getSystemEncoding :: IO DynEncoding
 getSystemEncoding = do
 #ifdef SYSTEM_ENCODING
-	enc <- get_system_encoding
-	str <- peekCString enc
-	return $ encodingFromString str
+    enc <- get_system_encoding
+    str <- peekCString enc
+    return $ encodingFromString str
 #else
-	error "getSystemEncoding is not supported on this platform"
+    error "getSystemEncoding is not supported on this platform"
 #endif

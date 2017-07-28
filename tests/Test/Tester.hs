@@ -13,14 +13,14 @@ import Prelude hiding (readFile)
 import System.IO.Encoding
 
 data EncodingTest
-	= forall enc. (Encoding enc,Show enc) =>
-		EncodingTest enc String [Word8]
-	| forall enc. (Encoding enc,Show enc) =>
-		EncodingFileTest enc FilePath FilePath
-	| forall enc. (Encoding enc,Show enc) =>
-		DecodingError enc [Word8] DecodingException
-	| forall enc. (Encoding enc,Show enc) =>
-		EncodingError enc String EncodingException
+    = forall enc. (Encoding enc,Show enc) =>
+        EncodingTest enc String [Word8]
+    | forall enc. (Encoding enc,Show enc) =>
+        EncodingFileTest enc FilePath FilePath
+    | forall enc. (Encoding enc,Show enc) =>
+        DecodingError enc [Word8] DecodingException
+    | forall enc. (Encoding enc,Show enc) =>
+        EncodingError enc String EncodingException
 
 instance Testable EncodingTest where
     test (EncodingTest enc src trg)

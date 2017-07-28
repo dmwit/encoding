@@ -359,6 +359,6 @@ encodingFromStringExplicit codeName = case (normalizeEncoding codeName) of
 -- | Takes the name of an encoding and creates a dynamic encoding from it.
 encodingFromString :: String -> DynEncoding
 encodingFromString str = maybe
-	(error $ "Data.Encoding.encodingFromString: Unknown encoding: "++show str)
-	id
-	(encodingFromStringExplicit str)
+    (error $ "Data.Encoding.encodingFromString: Unknown encoding: "++show str)
+    id
+    (encodingFromStringExplicit str)
