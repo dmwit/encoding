@@ -1,3 +1,9 @@
+Changes from 0.8 to 0.8.2
+-------------------------
+
+* Deprecated support for very old GHCs
+* Updated cabal file to differentiate between build dependencies and setup dependencies
+
 Changes from 0.8 to 0.8.1
 -------------------------
 
