@@ -124,6 +124,8 @@ Library
     Data.Map.Static
     Data.Static
     Data.CharMap
+  if impl(ghc >= 7.10)
+    GHC-Options: -fno-warn-tabs
   if flag(systemEncoding)
     Includes:
       system_encoding.h
