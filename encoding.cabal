@@ -9,7 +9,7 @@ Description:
 	Haskell has excellect handling of unicode, the Char type covers all unicode chars. Unfortunately, there's no possibility to read or write something to the outer world in an encoding other than ascii due to the lack of support for encodings. This library should help with that.
 Category:	Codec
 Homepage:	http://code.haskell.org/encoding/
-Cabal-Version:	>=1.6
+Cabal-Version:	>=1.8
 Build-Type:	Custom
 Extra-Source-Files:
   CHANGELOG
@@ -134,3 +134,16 @@ Library
     C-Sources:
       system_encoding.c
     CPP-Options: -DSYSTEM_ENCODING
+
+test-suite encoding-test
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      tests
+  main-is:             Main.hs
+  other-modules:       Test.Tester
+                     , Test.Tests
+  build-depends:       base
+                     , bytestring
+                     , encoding
+                     , HUnit
+                     , QuickCheck
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
