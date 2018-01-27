@@ -1,13 +1,13 @@
 module Main where
 
-import Distribution.Simple
-import Data.Encoding.Preprocessor.Mapping
-import Data.Encoding.Preprocessor.XMLMappingBuilder
+import           Data.Encoding.Preprocessor.Mapping
+import           Data.Encoding.Preprocessor.XMLMappingBuilder
+import           Distribution.Simple
 
-main = defaultMainWithHooks (simpleUserHooks
-                             {hookedPreProcessors = (("mapping",\_ _ -> mappingPreprocessor)
-                                                     :("mapping2",\_ _ -> mappingPreprocessor)
-                                                     :("xml",\_ _ -> xmlPreprocessor)
-                                                     :(hookedPreProcessors simpleUserHooks)
-                                                    )
-                             })
+main :: IO ()
+main = do
+  let mp  = ("mapping", \_ _ _ -> mappingPreprocessor)
+  let mp2 = ("mapping2",\_ _ _ -> mappingPreprocessor)
+  let xp  = ("xml",\_ _ _ -> xmlPreprocessor)
+  defaultMainWithHooks $ simpleUserHooks { hookedPreProcessors = mp:mp2:xp:hookedPreProcessors simpleUserHooks }
+
