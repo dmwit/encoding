@@ -36,7 +36,7 @@ Source-Repository this
 
 Custom-Setup
   Setup-Depends: base >=3 && <5,
-                 Cabal >=1.24 && <1.25,
+                 Cabal >=1.24 && <2.1,
                  containers,
                  filepath,
                  ghc-prim,
@@ -51,7 +51,7 @@ Library
                  extensible-exceptions >=0.1 && <0.2,
                  ghc-prim >=0.3 && <0.6,
                  mtl >=2.0 && <2.3,
-                 regex-compat >=0.71 && <0.95
+                 regex-compat >=0.71 && <0.96
 
   Extensions: CPP
 
