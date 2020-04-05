@@ -36,22 +36,22 @@ Source-Repository this
 
 Custom-Setup
   Setup-Depends: base >=3 && <5,
-                 Cabal >=1.24 && <1.25,
+                 Cabal >=2 && <3.0,
                  containers,
                  filepath,
                  ghc-prim,
-                 HaXml >=1.22 && <1.26
+                 HaXml >=1.22 && <1.27
 
 Library
   Build-Depends: array >=0.4 && <0.6,
                  base >=4 && <5,
                  binary >=0.7 && <0.10,
                  bytestring >=0.9 && <0.11,
-                 containers >=0.4 && <0.6,
+                 containers >=0.4 && <0.7,
                  extensible-exceptions >=0.1 && <0.2,
                  ghc-prim >=0.3 && <0.6,
                  mtl >=2.0 && <2.3,
-                 regex-compat >=0.71 && <0.95
+                 regex-compat >=0.71 && <0.96
 
   Extensions: CPP
 
