@@ -36,7 +36,7 @@ Source-Repository this
 
 Custom-Setup
   Setup-Depends: base >=3 && <5,
-                 Cabal >=1.24 && <1.25,
+                 Cabal >= 2.0,
                  containers,
                  filepath,
                  ghc-prim,
