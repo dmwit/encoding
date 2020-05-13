@@ -1,5 +1,5 @@
 Name:		encoding
-Version:	0.8.3
+Version:	0.8.4
 Author:		Henning Günther
 Maintainer:	daniel@wagner-home.com
 License:	BSD3
@@ -32,7 +32,7 @@ Source-Repository head
 Source-Repository this
   Type:         git
   Location:     http://github.com/dmwit/encoding
-  Tag:          0.8.3
+  Tag:          0.8.4
 
 Custom-Setup
   Setup-Depends: base >=3 && <5,

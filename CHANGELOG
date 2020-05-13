@@ -1,3 +1,9 @@
+Changes from 0.8.3 to 0.8.4
+---------------------------
+
+* Fixed builds with GHC 8.2, 8.4
+* Adopted to upgraded Hackage (Cabal 3.0)
+
 Changes from 0.8.2 to 0.8.3
 ---------------------------
 
