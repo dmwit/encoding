@@ -1,3 +1,9 @@
+Changes from 0.8.4 to 0.8.5
+---------------------------
+
+* Fixed sdist for both v1 and v2 approaches.
+* Fixed build package as dependency via `v2` commands.
+
 Changes from 0.8.3 to 0.8.4
 ---------------------------
 

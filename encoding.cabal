@@ -1,5 +1,5 @@
 Name:		encoding
-Version:	0.8.4
+Version:	0.8.5
 Author:		Henning Günther
 Maintainer:	daniel@wagner-home.com
 License:	BSD3
@@ -21,6 +21,9 @@ Extra-Source-Files:
   Data/Map/Static/Builder.hs
   system_encoding.h
   system_encoding.c
+  Data/Encoding/*.mapping
+  Data/Encoding/*.mapping2
+  Data/Encoding/*.xml
 
 Flag systemEncoding
   description: Provide the getSystemEncoding action to query the locale.
@@ -32,7 +35,7 @@ Source-Repository head
 Source-Repository this
   Type:         git
   Location:     http://github.com/dmwit/encoding
-  Tag:          0.8.4
+  Tag:          0.8.5
 
 Custom-Setup
   Setup-Depends: base >=3 && <5,
@@ -47,9 +50,9 @@ Library
                  base >=4 && <5,
                  binary >=0.7 && <0.10,
                  bytestring >=0.9 && <0.11,
-                 containers >=0.4 && <0.6,
+                 containers >=0.4 && <0.7,
                  extensible-exceptions >=0.1 && <0.2,
-                 ghc-prim >=0.3 && <0.6,
+                 ghc-prim >=0.3 && <0.7,
                  mtl >=2.0 && <2.3,
                  regex-compat >=0.71 && <0.95
 
