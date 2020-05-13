@@ -1,4 +1,6 @@
-{-# LANGUAGE ImplicitParams,ForeignFunctionInterface #-}
+{-# LANGUAGE CPP                      #-}
+{-# LANGUAGE ForeignFunctionInterface #-}
+{-# LANGUAGE ImplicitParams           #-}
 {- | This module provides a replacement for the normal (unicode unaware) IO functions of haskell.
      By using implicit parameters, it can be used almost as a drop-in replacement.
      For example, consider the following simple echo program:
@@ -31,7 +33,7 @@
      >   e <- getSystemEncoding
      >   let ?enc = e
      >   str <- getContents
-     >   putStr str     
+     >   putStr str
  -}
 module System.IO.Encoding
     (getSystemEncoding
@@ -54,14 +56,16 @@ module System.IO.Encoding
     ,print
     ,hPrint) where
 
-import Foreign.C.String
+import           Foreign.C.String
 
-import Data.Encoding
-import System.IO (Handle,stdout,stdin)
-import Prelude hiding (print,getContents,readFile,writeFile,appendFile,interact,putStr,putStrLn,getChar,getLine,putChar)
+import           Control.Monad.Reader (runReaderT)
+import qualified Data.ByteString      as BS
 import qualified Data.ByteString.Lazy as LBS
-import qualified Data.ByteString as BS
-import Control.Monad.Reader (runReaderT)
+import           Data.Encoding
+import           Prelude              hiding (appendFile, getChar, getContents,
+                                       getLine, interact, print, putChar,
+                                       putStr, putStrLn, readFile, writeFile)
+import           System.IO            (Handle, stdin, stdout)
 
 -- | Like the normal 'System.IO.hGetContents', but decodes the input using an
 --   encoding.

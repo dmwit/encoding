@@ -9,7 +9,7 @@ Description:
   Haskell has excellect handling of unicode, the Char type covers all unicode chars. Unfortunately, there's no possibility to read or write something to the outer world in an encoding other than ascii due to the lack of support for encodings. This library should help with that.
 Category:	Codec
 Homepage:	http://code.haskell.org/encoding/
-Cabal-Version:	>=1.8
+Cabal-Version:	>=1.10
 Build-Type:	Custom
 Extra-Source-Files:
   CHANGELOG
@@ -53,7 +53,7 @@ Library
                  mtl >=2.0 && <2.3,
                  regex-compat >=0.71 && <0.95
 
-  Extensions: CPP
+  Default-Language: Haskell2010
 
   Exposed-Modules:
     Data.Encoding
@@ -125,7 +125,6 @@ Library
     Data.Static
     Data.CharMap
   Autogen-Modules:
-    Data.Encoding.ISO88591
     Data.Encoding.ISO88592
     Data.Encoding.ISO88593
     Data.Encoding.ISO88594
@@ -195,3 +194,4 @@ test-suite encoding-test
                      , HUnit
                      , QuickCheck
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  Default-Language:  Haskell2010
