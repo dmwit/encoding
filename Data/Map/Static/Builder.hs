@@ -37,6 +37,6 @@ treeDepth sz = find' [0..]
 findSplitSize :: Int -> Int
 findSplitSize len = let depth = treeDepth len
                         free = (maxSize depth) - len
-                    in if free <= (1 `shiftL` (depth - 2))
+                    in if 2 * free <= (1 `shiftL` (depth - 1))
                        then maxSize (depth - 1)
                        else len - (maxSize (depth - 2)) - 1
