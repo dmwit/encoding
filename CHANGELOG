@@ -1,3 +1,8 @@
+Changes from 0.8.5 to 0.8.6
+
+* Fixed arithmetic underflow during GHC >=8.8 build.
+* Added support GHC 9.0.
+
 Changes from 0.8.4 to 0.8.5
 ---------------------------
 
