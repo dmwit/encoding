@@ -17,6 +17,9 @@
 #  location: "./custom-snapshot.yaml"
 resolver: lts-13.0
 
+extra-deps:
+  - HaXml-1.25.5
+
 # User packages to be built.
 # Various formats can be used as shown in the example below.
 #

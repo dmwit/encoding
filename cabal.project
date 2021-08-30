@@ -1,0 +1,8 @@
+packages: .
+
+-- FIXME: remove after release HaXml-1.25.6
+source-repository-package
+    type: git
+    location: https://github.com/hackage-trustees/malcolm-wallace-universe
+    subdir: HaXml-1.25.4
+    branch: master
