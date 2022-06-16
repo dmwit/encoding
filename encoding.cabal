@@ -32,10 +32,6 @@ Source-Repository head
   Type:         git
   Location:     http://github.com/dmwit/encoding
 
-Source-Repository this
-  Type:         git
-  Location:     http://github.com/dmwit/encoding
-
 Custom-Setup
   Setup-Depends: base >=3 && <5,
                  Cabal >= 2.0,
