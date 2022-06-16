@@ -1,4 +1,10 @@
+Changes from 0.8.6 to 0.8.7
+---------------------------
+
+* Fixed build with stack and its resolver LTS 19.
+
 Changes from 0.8.5 to 0.8.6
+---------------------------
 
 * Fixed arithmetic underflow during GHC >=8.8 build.
 * Added support GHC 9.0.
