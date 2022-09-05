@@ -36,16 +36,26 @@ instance StaticElement Char where
 
 instance StaticElement (Maybe Char) where
     extract addr i = let !v = indexWord32OffAddr# addr i
-#if __GLASGOW_HASKELL__ >= 708
+#if __GLASGOW_HASKELL__ < 708
+                     in if eqWord# v (int2Word# 4294967295#) -- -1 in Word32
+#elif __GLASGOW_HASKELL__ < 902
                      in if isTrue# (eqWord# v (int2Word# 4294967295#)) -- -1 in Word32
 #else
-                     in if eqWord# v (int2Word# 4294967295#) -- -1 in Word32
+                     in if isTrue# (eqWord32# v (wordToWord32# (int2Word# 4294967295#))) -- -1 in Word32
 #endif
                         then Nothing
+#if __GLASGOW_HASKELL__ < 902
                         else (if (I# (word2Int# v)) > 0x10FFFF
                               then error (show (I# (word2Int# v))++" is not a valid char ("++show (I# i)++")")
                               else Just (chr (I# (word2Int# v)))
                              )
+#else
+                        else (if (I# (int32ToInt# (word32ToInt32# v))) > 0x10FFFF
+                              then error (show (I# (int32ToInt# (word32ToInt32# v)))++" is not a valid char ("++show (I# i)++")")
+                              else Just (chr (I#  (int32ToInt# (word32ToInt32# v))))
+                             )
+#endif
+
     gen Nothing = gen (-1::Word32)
     gen (Just c) = gen (fromIntegral (ord c)::Word32)
 
