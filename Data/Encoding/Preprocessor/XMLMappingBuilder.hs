@@ -1,4 +1,4 @@
-{-# LANGUAGE ParallelListComp #-}
+{-# LANGUAGE ParallelListComp, CPP #-}
 module Data.Encoding.Preprocessor.XMLMappingBuilder where
 
 import Data.Word
@@ -19,6 +19,9 @@ import Control.Exception (assert)
 xmlPreprocessor :: PreProcessor
 xmlPreprocessor = PreProcessor
                   { platformIndependent = True
+#if MIN_VERSION_Cabal(3,8,0)
+                  , ppOrdering=unsorted
+#endif
                   , runPreProcessor = \src trg verb -> do
                                         createModuleFromFile src trg
                   }

@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 module Data.Encoding.Preprocessor.Mapping where
 
 import Distribution.Simple.PreProcess
@@ -69,6 +70,10 @@ validTranslations = mapMaybe (\(n,mc) -> case mc of
 mappingPreprocessor :: PreProcessor
 mappingPreprocessor = PreProcessor
                   {platformIndependent = True
+#if MIN_VERSION_Cabal(3,8,0)
+                  ,ppOrdering=unsorted
+#endif
+
                   ,runPreProcessor = \(sbase,sfile) (tbase,tfile) verb -> do
                                        let (dir,fn) = splitFileName sfile
                                        let (bname,ext) = splitExtensions fn
