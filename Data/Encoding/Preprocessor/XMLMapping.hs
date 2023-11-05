@@ -33,28 +33,28 @@ data CharacterMapping_Attrs = CharacterMapping_Attrs
     , characterMappingNormalization :: (Defaultable CharacterMapping_normalization)
     } deriving (Eq,Show)
 data CharacterMapping_bidiOrder = CharacterMapping_bidiOrder_logical
-                                   |  CharacterMapping_bidiOrder_RTL  | 
+                                   |  CharacterMapping_bidiOrder_RTL  |
                                   CharacterMapping_bidiOrder_LTR
                                 deriving (Eq,Show)
 data CharacterMapping_combiningOrder = CharacterMapping_combiningOrder_before
                                         |  CharacterMapping_combiningOrder_after
                                      deriving (Eq,Show)
 data CharacterMapping_normalization = CharacterMapping_normalization_undetermined
-                                       |  CharacterMapping_normalization_neither  | 
-                                      CharacterMapping_normalization_NFC  | 
-                                      CharacterMapping_normalization_NFD  | 
+                                       |  CharacterMapping_normalization_neither  |
+                                      CharacterMapping_normalization_NFC  |
+                                      CharacterMapping_normalization_NFD  |
                                       CharacterMapping_normalization_NFC_NFD
                                     deriving (Eq,Show)
 data Stateful_siso = Stateful_siso Validity Validity
                    deriving (Eq,Show)
-newtype History = History (List1 Modified) 		deriving (Eq,Show)
+newtype History = History (List1 Modified)         deriving (Eq,Show)
 data Modified = Modified Modified_Attrs String
               deriving (Eq,Show)
 data Modified_Attrs = Modified_Attrs
     { modifiedVersion :: String
     , modifiedDate :: String
     } deriving (Eq,Show)
-newtype Validity = Validity (List1 State) 		deriving (Eq,Show)
+newtype Validity = Validity (List1 State)         deriving (Eq,Show)
 data State = State
     { stateType :: String
     , stateNext :: String
@@ -112,10 +112,10 @@ data Escape = Escape
     { escapeSequence :: String
     , escapeName :: String
     } deriving (Eq,Show)
-newtype Si = Si (List1 Designator) 		deriving (Eq,Show)
-newtype So = So (List1 Designator) 		deriving (Eq,Show)
-newtype Ss2 = Ss2 (List1 Designator) 		deriving (Eq,Show)
-newtype Ss3 = Ss3 (List1 Designator) 		deriving (Eq,Show)
+newtype Si = Si (List1 Designator)         deriving (Eq,Show)
+newtype So = So (List1 Designator)         deriving (Eq,Show)
+newtype Ss2 = Ss2 (List1 Designator)         deriving (Eq,Show)
+newtype Ss3 = Ss3 (List1 Designator)         deriving (Eq,Show)
 data Designator = Designator
     { designatorSequence :: String
     , designatorName :: String
@@ -153,7 +153,7 @@ instance XmlAttributes CharacterMapping_Attrs where
           , characterMappingCombiningOrder = defaultA fromAttrToTyp CharacterMapping_combiningOrder_after "combiningOrder" as
           , characterMappingNormalization = defaultA fromAttrToTyp CharacterMapping_normalization_undetermined "normalization" as
           }
-    toAttrs v = catMaybes 
+    toAttrs v = catMaybes
         [ toAttrFrStr "id" (characterMappingId v)
         , toAttrFrStr "version" (characterMappingVersion v)
         , maybeToAttr toAttrFrStr "description" (characterMappingDescription v)
@@ -275,7 +275,7 @@ instance XmlAttributes Modified_Attrs where
           { modifiedVersion = definiteA fromAttrToStr "modified" "version" as
           , modifiedDate = definiteA fromAttrToStr "modified" "date" as
           }
-    toAttrs v = catMaybes 
+    toAttrs v = catMaybes
         [ toAttrFrStr "version" (modifiedVersion v)
         , toAttrFrStr "date" (modifiedDate v)
         ]
@@ -308,7 +308,7 @@ instance XmlAttributes State where
           , stateE = possibleA fromAttrToTyp "e" as
           , stateMax = possibleA fromAttrToStr "max" as
           }
-    toAttrs v = catMaybes 
+    toAttrs v = catMaybes
         [ toAttrFrStr "type" (stateType v)
         , toAttrFrStr "next" (stateNext v)
         , toAttrFrTyp "s" (stateS v)
@@ -337,7 +337,7 @@ instance XmlAttributes Assignments_Attrs where
           { assignmentsSub = defaultA fromAttrToStr "1A" "sub" as
           , assignmentsSub1 = possibleA fromAttrToStr "sub1" as
           }
-    toAttrs v = catMaybes 
+    toAttrs v = catMaybes
         [ defaultToAttr toAttrFrStr "sub" (assignmentsSub v)
         , maybeToAttr toAttrFrStr "sub1" (assignmentsSub1 v)
         ]
@@ -358,7 +358,7 @@ instance XmlAttributes A where
           , aC = possibleA fromAttrToStr "c" as
           , aV = possibleA fromAttrToStr "v" as
           }
-    toAttrs v = catMaybes 
+    toAttrs v = catMaybes
         [ toAttrFrTyp "b" (aB v)
         , toAttrFrTyp "u" (aU v)
         , maybeToAttr toAttrFrStr "c" (aC v)
@@ -384,7 +384,7 @@ instance XmlAttributes Fub where
           , fubRc = possibleA fromAttrToStr "rc" as
           , fubV = possibleA fromAttrToStr "v" as
           }
-    toAttrs v = catMaybes 
+    toAttrs v = catMaybes
         [ toAttrFrTyp "b" (fubB v)
         , toAttrFrTyp "u" (fubU v)
         , maybeToAttr toAttrFrStr "c" (fubC v)
@@ -409,7 +409,7 @@ instance XmlAttributes Fbu where
           , fbuU = definiteA fromAttrToTyp "fbu" "u" as
           , fbuV = possibleA fromAttrToStr "v" as
           }
-    toAttrs v = catMaybes 
+    toAttrs v = catMaybes
         [ toAttrFrTyp "b" (fbuB v)
         , toAttrFrTyp "u" (fbuU v)
         , maybeToAttr toAttrFrStr "v" (fbuV v)
@@ -431,7 +431,7 @@ instance XmlAttributes Sub1 where
           , sub1C = possibleA fromAttrToStr "c" as
           , sub1V = possibleA fromAttrToStr "v" as
           }
-    toAttrs v = catMaybes 
+    toAttrs v = catMaybes
         [ toAttrFrTyp "u" (sub1U v)
         , maybeToAttr toAttrFrStr "c" (sub1C v)
         , maybeToAttr toAttrFrStr "v" (sub1V v)
@@ -457,7 +457,7 @@ instance XmlAttributes Range where
           , rangeBMax = definiteA fromAttrToTyp "range" "bMax" as
           , rangeV = possibleA fromAttrToStr "v" as
           }
-    toAttrs v = catMaybes 
+    toAttrs v = catMaybes
         [ toAttrFrTyp "bFirst" (rangeBFirst v)
         , toAttrFrTyp "bLast" (rangeBLast v)
         , toAttrFrTyp "uFirst" (rangeUFirst v)
@@ -493,7 +493,7 @@ instance XmlAttributes Default2022 where
         Default2022
           { default2022Name = definiteA fromAttrToStr "default2022" "name" as
           }
-    toAttrs v = catMaybes 
+    toAttrs v = catMaybes
         [ toAttrFrStr "name" (default2022Name v)
         ]
 
@@ -512,7 +512,7 @@ instance XmlAttributes Escape where
           { escapeSequence = definiteA fromAttrToStr "escape" "sequence" as
           , escapeName = definiteA fromAttrToStr "escape" "name" as
           }
-    toAttrs v = catMaybes 
+    toAttrs v = catMaybes
         [ toAttrFrStr "sequence" (escapeSequence v)
         , toAttrFrStr "name" (escapeName v)
         ]
@@ -572,7 +572,7 @@ instance XmlAttributes Designator where
           { designatorSequence = definiteA fromAttrToStr "designator" "sequence" as
           , designatorName = definiteA fromAttrToStr "designator" "name" as
           }
-    toAttrs v = catMaybes 
+    toAttrs v = catMaybes
         [ toAttrFrStr "sequence" (designatorSequence v)
         , toAttrFrStr "name" (designatorName v)
         ]

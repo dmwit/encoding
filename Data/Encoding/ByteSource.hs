@@ -9,9 +9,11 @@ import Data.Char
 import Data.Maybe
 import Data.Word
 import Control.Applicative as A
-import Control.Monad.State
-import Control.Monad.Identity
-import Control.Monad.Reader
+import Control.Monad (when)
+import Control.Monad.IO.Class (liftIO)
+import Control.Monad.State (StateT (..), get, gets, put)
+import Control.Monad.Identity (Identity)
+import Control.Monad.Reader (ReaderT, ask)
 import Control.Exception.Extensible
 import Control.Throws
 import qualified Data.ByteString as BS

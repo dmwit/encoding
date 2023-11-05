@@ -12,9 +12,10 @@ import Data.Foldable (toList)
 import Control.Throws
 import Control.Exception.Extensible
 import Control.Applicative
-import Control.Monad.State
-import Control.Monad.Identity
-import Control.Monad.Reader
+import Control.Monad (ap, liftM)
+import Control.Monad.IO.Class (liftIO)
+import Control.Monad.State (StateT, modify)
+import Control.Monad.Reader (ReaderT, ask)
 import Foreign.Ptr (Ptr,plusPtr,minusPtr)
 import Foreign.Marshal.Alloc (mallocBytes,reallocBytes,free)
 import Foreign.Storable (poke)
@@ -85,11 +86,11 @@ instance Functor PutME where
   fmap = liftM
 
 instance Applicative PutME where
-  pure = return
+  pure x = PutME $ Right (pure (),x)
   (<*>) = ap
 
 instance Monad PutME where
-    return x = PutME $ Right (return (),x)
+    return = pure
     (PutME x) >>= g = PutME $ do
                         (m,r) <- x
                         let (PutME ng) = g r
@@ -126,11 +127,11 @@ instance Functor StrictSink where
   fmap = liftM
 
 instance Applicative StrictSink where
-  pure = return
+  pure x = StrictS $ \cstr pos max -> return (x,cstr,pos,max)
   (<*>) = ap
 
 instance Monad StrictSink where
-    return x = StrictS $ \cstr pos max -> return (x,cstr,pos,max)
+    return = pure
     (StrictS f) >>= g = StrictS (\cstr pos max -> do
                                    (res,ncstr,npos,nmax) <- f cstr pos max
                                    let StrictS g' = g res
@@ -159,11 +160,11 @@ instance Functor StrictSinkE where
   fmap = liftM
 
 instance Applicative StrictSinkE where
-  pure = return
+  pure = StrictSinkE . return . Right
   (<*>) = ap
 
 instance Monad StrictSinkE where
-    return = StrictSinkE . return . Right
+    return = pure
     (StrictSinkE s) >>= g = StrictSinkE $ do
                               res <- s
                               case res of
@@ -193,11 +194,11 @@ instance Functor StrictSinkExplicit where
   fmap = liftM
 
 instance Applicative StrictSinkExplicit where
-  pure = return
+  pure = (StrictSinkExplicit).return.Right
   (<*>) = ap
 
 instance Monad StrictSinkExplicit where
-    return = (StrictSinkExplicit).return.Right
+    return = pure
     (StrictSinkExplicit sink) >>= f
         = StrictSinkExplicit (do
                                res <- sink

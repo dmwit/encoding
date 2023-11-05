@@ -56,7 +56,7 @@ instance StaticElement (Maybe Char) where
                              )
 #endif
 
-    gen Nothing = gen (-1::Word32)
+    gen Nothing = gen (complement (0 :: Word32))
     gen (Just c) = gen (fromIntegral (ord c)::Word32)
 
 instance StaticElement a => StaticElement (a,a) where
