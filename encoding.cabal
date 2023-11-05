@@ -34,7 +34,7 @@ Source-Repository head
 
 Custom-Setup
   Setup-Depends: base >=3 && <5,
-                 Cabal >= 2.0,
+                 Cabal >= 2.0 && < 3.11,
                  containers,
                  filepath,
                  ghc-prim,
@@ -189,7 +189,7 @@ test-suite encoding-test
   build-depends:       base
                      , bytestring
                      , encoding
-                     , HUnit
-                     , QuickCheck
+                     , HUnit <=1.7
+                     , QuickCheck <=2.15
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   Default-Language:  Haskell2010
