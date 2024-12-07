@@ -1,5 +1,5 @@
 Name:		encoding
-Version:	0.8.9
+Version:	0.8.10
 Author:		Henning Günther
 Maintainer:	daniel@wagner-home.com
 License:	BSD3
@@ -34,7 +34,7 @@ Source-Repository head
 
 Custom-Setup
   Setup-Depends: base >=3 && <5,
-                 Cabal >= 2.0,
+                 Cabal >= 2.0 && < 3.14,
                  containers,
                  filepath,
                  ghc-prim,
