@@ -28,6 +28,11 @@ Extra-Source-Files:
 Flag systemEncoding
   description: Provide the getSystemEncoding action to query the locale.
 
+Flag generate-encodings
+  description: Generate encodings.
+  manual: True
+  default: False
+
 Source-Repository head
   Type:         git
   Location:     http://github.com/dmwit/encoding
@@ -179,6 +184,15 @@ Library
     C-Sources:
       system_encoding.c
     CPP-Options: -DSYSTEM_ENCODING
+
+executable encoding-exe
+  main-is: app/Main.hs
+  if flag(generate-encodings)
+    build-depends: base
+  else
+    buildable: False
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  Default-Language:  Haskell2010
 
 test-suite encoding-test
   type:                exitcode-stdio-1.0
