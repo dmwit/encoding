@@ -188,7 +188,10 @@ Library
 executable encoding-exe
   main-is: app/Main.hs
   if flag(generate-encodings)
-    build-depends: base
+    build-depends:     base
+                     , optparse-applicative
+                     , directory
+                     , filepath
   else
     buildable: False
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
