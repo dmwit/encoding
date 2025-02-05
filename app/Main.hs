@@ -63,11 +63,11 @@ generateEncodings Input { inputDir = inputDir, extensions = extensions } = do
       directoryFiles <- listDirectory dir
       let files = filesWithExtensions directoryFiles extensions
       mapM_
-        ( \filePath ->
+        ( \fileName ->
           runSimplePreProcessor
-            (getPreProcessor filePath)
-            (dir </> filePath)
-            (dir </> (replaceExtension filePath ".hs"))
+            (getPreProcessor fileName)
+            (dir </> fileName)
+            (dir </> (replaceExtension fileName ".hs"))
             normal
         )
         files
