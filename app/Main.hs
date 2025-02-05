@@ -9,6 +9,7 @@ import Distribution.Verbosity (normal)
 import Options.Applicative
 import System.Directory (doesDirectoryExist, listDirectory)
 import System.FilePath (replaceExtension, takeExtension, (</>))
+import Control.Monad (when)
 
 data Input = Input 
   { inputDir :: FilePath
@@ -36,33 +37,42 @@ input = Input
 filesWithExtensions :: [FilePath] -> [String] -> [FilePath]
 filesWithExtensions files exts = filter (\filePath -> takeExtension filePath `elem` exts) files
 
+validateExtensions :: [String] -> IO ()
+validateExtensions extensions = do
+  when (not (validateExtensions' extensions)) $ error
+    ( "Got unexpected extensions: "
+    ++ intercalate ", " extensions
+    ++ ", supported extensions: "
+    ++ intercalate ", " (M.keys extensionMap)
+    )
+  return ()
+    where
+      validateExtensions' = all (`elem` M.keys extensionMap)
+
+withDirectory :: FilePath -> (FilePath -> IO ()) -> IO ()
+withDirectory dir action = do
+  dirExist <- doesDirectoryExist dir
+  when (not dirExist) $ error ("Directory " ++ show dir ++ " does not exist")
+  action dir
+
 generateEncodings :: Input -> IO ()
 generateEncodings Input { inputDir = inputDir, extensions = extensions } = do
-  if not (validateExtensions extensions)
-    then error 
-      ( "Got unexpected extensions: " 
-      ++ intercalate ", " extensions 
-      ++ ", supported extensions: " 
-      ++ intercalate ", " (M.keys extensionMap)
-      )
-    else do
-      isDirExist <- doesDirectoryExist inputDir
-      if not isDirExist
-        then error ("Directory " ++ show inputDir ++ " does not exist")
-        else do 
-          directoryFiles <- listDirectory inputDir
-          let files = filesWithExtensions directoryFiles extensions
-          mapM_ 
-            ( \filePath -> 
-              runSimplePreProcessor 
-                (getPreProcessor filePath)
-                (inputDir </> filePath)
-                (inputDir </> (replaceExtension filePath ".hs")) 
-                normal
-            ) 
-            files
+  validateExtensions extensions
+  withDirectory inputDir
+    ( \dir -> do
+      directoryFiles <- listDirectory dir
+      let files = filesWithExtensions directoryFiles extensions
+      mapM_
+        ( \filePath ->
+          runSimplePreProcessor
+            (getPreProcessor filePath)
+            (dir </> filePath)
+            (dir </> (replaceExtension filePath ".hs"))
+            normal
+        )
+        files
+    )
   where
-    validateExtensions = all (`elem` M.keys extensionMap)
     getPreProcessor filePath = extensionMap M.! (takeExtension filePath)
 
 main :: IO ()
