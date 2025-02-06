@@ -3,7 +3,7 @@ module Utils where
 import Control.Monad (when)
 import Data.List (intercalate)
 import System.Directory (doesDirectoryExist)
-import System.FilePath (replaceExtension, takeExtension, (</>))
+import System.FilePath (takeExtension)
 
 filesWithExtensions :: [FilePath] -> [String] -> [FilePath]
 filesWithExtensions files exts = filter (\filePath -> takeExtension filePath `elem` exts) files
