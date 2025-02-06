@@ -7,9 +7,9 @@ import qualified Data.Map as M
 import Distribution.Simple.PreProcess
 import Distribution.Verbosity (normal)
 import Options.Applicative
-import System.Directory (doesDirectoryExist, listDirectory)
+import System.Directory (listDirectory)
 import System.FilePath (replaceExtension, takeExtension, (</>))
-import Control.Monad (when)
+import Utils (filesWithExtensions, validateExtensions, withDirectory)
 
 data Input = Input 
   { inputDir :: FilePath
@@ -34,30 +34,9 @@ input = Input
         )
       )
 
-filesWithExtensions :: [FilePath] -> [String] -> [FilePath]
-filesWithExtensions files exts = filter (\filePath -> takeExtension filePath `elem` exts) files
-
-validateExtensions :: [String] -> IO ()
-validateExtensions extensions = do
-  when (not (validateExtensions' extensions)) $ error
-    ( "Got unexpected extensions: "
-    ++ intercalate ", " extensions
-    ++ ", supported extensions: "
-    ++ intercalate ", " (M.keys extensionMap)
-    )
-  return ()
-    where
-      validateExtensions' = all (`elem` M.keys extensionMap)
-
-withDirectory :: FilePath -> (FilePath -> IO ()) -> IO ()
-withDirectory dir action = do
-  dirExist <- doesDirectoryExist dir
-  when (not dirExist) $ error ("Directory " ++ show dir ++ " does not exist")
-  action dir
-
 generateEncodings :: Input -> IO ()
 generateEncodings Input { inputDir = inputDir, extensions = extensions } = do
-  validateExtensions extensions
+  validateExtensions extensions (M.keys extensionMap)
   withDirectory inputDir
     ( \dir -> do
       directoryFiles <- listDirectory dir

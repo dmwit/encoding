@@ -142,6 +142,7 @@ executable encoding-exe
     Data.CharMap.Builder
     Data.Map.Static.Builder
     Data.Array.Static.Builder
+    Utils
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   Default-Language:  Haskell2010
 
