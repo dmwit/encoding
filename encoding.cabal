@@ -13,12 +13,6 @@ Cabal-Version:	2.0
 Build-Type:	Simple
 Extra-Source-Files:
   CHANGELOG
-  Data/Encoding/Preprocessor/Mapping.hs
-  Data/Encoding/Preprocessor/XMLMapping.hs
-  Data/Encoding/Preprocessor/XMLMappingBuilder.hs
-  Data/CharMap/Builder.hs
-  Data/Array/Static/Builder.hs
-  Data/Map/Static/Builder.hs
   system_encoding.h
   system_encoding.c
 
@@ -110,11 +104,11 @@ Library
     Data.Encoding.CP874
     Data.Encoding.CP932
     System.IO.Encoding
+    Data.Static
   Other-Modules:
     Data.Encoding.Base
     Data.Array.Static
     Data.Map.Static
-    Data.Static
     Data.CharMap
   if impl(ghc >= 7.10)
     GHC-Options: -fno-warn-tabs
@@ -128,32 +122,26 @@ Library
     CPP-Options: -DSYSTEM_ENCODING
 
 executable encoding-exe
-  main-is: app/Main.hs
+  main-is: Main.hs
+  hs-source-dirs: app
   if flag(generate-encodings)
     build-depends:     base
                      , optparse-applicative
                      , directory
                      , filepath
+                     , containers
                      , HaXml >=1.22 && <1.27
                      , Cabal >= 2.0 && < 3.14
-                     , ghc-prim >=0.3 && <0.12
-                     , array >=0.4 && <0.6
-                     , binary >=0.7 && <0.10
-                     , bytestring >=0.9 && <0.13
-                     , containers >=0.4 && <0.8
-                     , extensible-exceptions >=0.1 && <0.2
-                     , mtl >=2.0 && <2.4
-                     , regex-compat >=0.71 && <0.96
+                     , encoding
   else
     buildable: False
   other-modules:
-    Data.Array.Static.Builder
-    Data.CharMap.Builder
     Data.Encoding.Preprocessor.Mapping
     Data.Encoding.Preprocessor.XMLMapping
     Data.Encoding.Preprocessor.XMLMappingBuilder
+    Data.CharMap.Builder
     Data.Map.Static.Builder
-    Data.Static
+    Data.Array.Static.Builder
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   Default-Language:  Haskell2010
 
