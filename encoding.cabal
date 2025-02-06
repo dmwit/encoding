@@ -10,7 +10,7 @@ Description:
 Category:	Codec
 Homepage:	http://code.haskell.org/encoding/
 Cabal-Version:	2.0
-Build-Type:	Custom
+Build-Type:	Simple
 Extra-Source-Files:
   CHANGELOG
   Data/Encoding/Preprocessor/Mapping.hs
@@ -36,14 +36,6 @@ Flag generate-encodings
 Source-Repository head
   Type:         git
   Location:     http://github.com/dmwit/encoding
-
-Custom-Setup
-  Setup-Depends: base >=3 && <5,
-                 Cabal >= 2.0 && < 3.14,
-                 containers,
-                 filepath,
-                 ghc-prim,
-                 HaXml >=1.22 && <1.27
 
 Library
   Build-Depends: array >=0.4 && <0.6,
@@ -127,53 +119,6 @@ Library
     Data.Map.Static
     Data.Static
     Data.CharMap
-  Autogen-Modules:
-    Data.Encoding.ISO88592
-    Data.Encoding.ISO88593
-    Data.Encoding.ISO88594
-    Data.Encoding.ISO88595
-    Data.Encoding.ISO88596
-    Data.Encoding.ISO88597
-    Data.Encoding.ISO88598
-    Data.Encoding.ISO88599
-    Data.Encoding.ISO885910
-    Data.Encoding.ISO885911
-    Data.Encoding.ISO885913
-    Data.Encoding.ISO885914
-    Data.Encoding.ISO885915
-    Data.Encoding.ISO885916
-    Data.Encoding.CP1250
-    Data.Encoding.CP1251
-    Data.Encoding.CP1252
-    Data.Encoding.CP1253
-    Data.Encoding.CP1254
-    Data.Encoding.CP1255
-    Data.Encoding.CP1256
-    Data.Encoding.CP1257
-    Data.Encoding.CP1258
-    Data.Encoding.MacOSRoman
-    Data.Encoding.CP437
-    Data.Encoding.CP737
-    Data.Encoding.CP775
-    Data.Encoding.CP850
-    Data.Encoding.CP852
-    Data.Encoding.CP855
-    Data.Encoding.CP857
-    Data.Encoding.CP860
-    Data.Encoding.CP861
-    Data.Encoding.CP862
-    Data.Encoding.CP863
-    Data.Encoding.CP864
-    Data.Encoding.CP865
-    Data.Encoding.CP866
-    Data.Encoding.CP869
-    Data.Encoding.CP874
-    Data.Encoding.CP932
-    Data.Encoding.GB18030
-    Data.Encoding.JISX0201
-    Data.Encoding.JISX0208
-    Data.Encoding.JISX0212
-    Data.Encoding.ShiftJIS
   if impl(ghc >= 7.10)
     GHC-Options: -fno-warn-tabs
   if flag(systemEncoding)
@@ -194,7 +139,7 @@ executable encoding-exe
                      , filepath
                      , HaXml >=1.22 && <1.27
                      , Cabal >= 2.0 && < 3.14
-                     , ghc-prim
+                     , ghc-prim >=0.3 && <0.12
                      , array >=0.4 && <0.6
                      , binary >=0.7 && <0.10
                      , bytestring >=0.9 && <0.13
