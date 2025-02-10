@@ -1,18 +1,20 @@
 Name:		encoding
 Version:	0.8.10
 Author:		Henning Günther
-Maintainer:	daniel@wagner-home.com
+Maintainer:	daniel@wagner-home.com, Andrey Prokopenko
 License:	BSD3
 License-File:   LICENSE
 Synopsis:	A library for various character encodings
 Description:
   Haskell has excellect handling of unicode, the Char type covers all unicode chars. Unfortunately, there's no possibility to read or write something to the outer world in an encoding other than ascii due to the lack of support for encodings. This library should help with that.
 Category:	Codec
-Homepage:	http://code.haskell.org/encoding/
+Homepage:	https://github.com/dmwit/encoding
+Bug-Reports:    https://github.com/dmwit/encoding/issues
 Cabal-Version:	2.0
 Build-Type:	Simple
 Extra-Source-Files:
   CHANGELOG
+  README.md
   system_encoding.h
   system_encoding.c
 
