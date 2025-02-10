@@ -6,7 +6,7 @@
 
 # Do you want to add a new or missing encoding?
 
-1. Add file to repo (see `.mapping` or `.xml` files in `./Data/Encoding`.
+1. Add file to repo (see `.mapping` or `.xml` files in `./Data/Encoding`).
 2. Install encoding generator via `cabal install -fgenerate-encodings encoding-exe`.
 3. Run encoding generator with your newly added files.
 4. List generated modules in `encoding.cabal` and commit file.

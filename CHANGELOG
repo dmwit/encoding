@@ -1,3 +1,9 @@
+Changes from 0.8.10 to 0.9
+---------------------------
+
+* Change build-type from Custom to Simple.
+* Describe encoding generation process (as a background process).
+
 Changes from 0.8.9 to 0.8.10
 ---------------------------
 
