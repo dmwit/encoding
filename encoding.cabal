@@ -10,35 +10,23 @@ Description:
 Category:	Codec
 Homepage:	http://code.haskell.org/encoding/
 Cabal-Version:	2.0
-Build-Type:	Custom
+Build-Type:	Simple
 Extra-Source-Files:
   CHANGELOG
-  Data/Encoding/Preprocessor/Mapping.hs
-  Data/Encoding/Preprocessor/XMLMapping.hs
-  Data/Encoding/Preprocessor/XMLMappingBuilder.hs
-  Data/CharMap/Builder.hs
-  Data/Array/Static/Builder.hs
-  Data/Map/Static/Builder.hs
   system_encoding.h
   system_encoding.c
-  Data/Encoding/*.mapping
-  Data/Encoding/*.mapping2
-  Data/Encoding/*.xml
 
 Flag systemEncoding
   description: Provide the getSystemEncoding action to query the locale.
 
+Flag generate-encodings
+  description: Generate encodings.
+  manual: True
+  default: False
+
 Source-Repository head
   Type:         git
   Location:     http://github.com/dmwit/encoding
-
-Custom-Setup
-  Setup-Depends: base >=3 && <5,
-                 Cabal >= 2.0 && < 3.14,
-                 containers,
-                 filepath,
-                 ghc-prim,
-                 HaXml >=1.22 && <1.27
 
 Library
   Build-Depends: array >=0.4 && <0.6,
@@ -116,59 +104,12 @@ Library
     Data.Encoding.CP874
     Data.Encoding.CP932
     System.IO.Encoding
+    Data.Static
   Other-Modules:
     Data.Encoding.Base
     Data.Array.Static
     Data.Map.Static
-    Data.Static
     Data.CharMap
-  Autogen-Modules:
-    Data.Encoding.ISO88592
-    Data.Encoding.ISO88593
-    Data.Encoding.ISO88594
-    Data.Encoding.ISO88595
-    Data.Encoding.ISO88596
-    Data.Encoding.ISO88597
-    Data.Encoding.ISO88598
-    Data.Encoding.ISO88599
-    Data.Encoding.ISO885910
-    Data.Encoding.ISO885911
-    Data.Encoding.ISO885913
-    Data.Encoding.ISO885914
-    Data.Encoding.ISO885915
-    Data.Encoding.ISO885916
-    Data.Encoding.CP1250
-    Data.Encoding.CP1251
-    Data.Encoding.CP1252
-    Data.Encoding.CP1253
-    Data.Encoding.CP1254
-    Data.Encoding.CP1255
-    Data.Encoding.CP1256
-    Data.Encoding.CP1257
-    Data.Encoding.CP1258
-    Data.Encoding.MacOSRoman
-    Data.Encoding.CP437
-    Data.Encoding.CP737
-    Data.Encoding.CP775
-    Data.Encoding.CP850
-    Data.Encoding.CP852
-    Data.Encoding.CP855
-    Data.Encoding.CP857
-    Data.Encoding.CP860
-    Data.Encoding.CP861
-    Data.Encoding.CP862
-    Data.Encoding.CP863
-    Data.Encoding.CP864
-    Data.Encoding.CP865
-    Data.Encoding.CP866
-    Data.Encoding.CP869
-    Data.Encoding.CP874
-    Data.Encoding.CP932
-    Data.Encoding.GB18030
-    Data.Encoding.JISX0201
-    Data.Encoding.JISX0208
-    Data.Encoding.JISX0212
-    Data.Encoding.ShiftJIS
   if impl(ghc >= 7.10)
     GHC-Options: -fno-warn-tabs
   if flag(systemEncoding)
@@ -179,6 +120,31 @@ Library
     C-Sources:
       system_encoding.c
     CPP-Options: -DSYSTEM_ENCODING
+
+executable encoding-exe
+  main-is: Main.hs
+  hs-source-dirs: app
+  if flag(generate-encodings)
+    build-depends:     base
+                     , optparse-applicative
+                     , directory
+                     , filepath
+                     , containers
+                     , HaXml >=1.22 && <1.27
+                     , Cabal >= 2.0 && < 3.14
+                     , encoding
+  else
+    buildable: False
+  other-modules:
+    Data.Encoding.Preprocessor.Mapping
+    Data.Encoding.Preprocessor.XMLMapping
+    Data.Encoding.Preprocessor.XMLMappingBuilder
+    Data.CharMap.Builder
+    Data.Map.Static.Builder
+    Data.Array.Static.Builder
+    Utils
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  Default-Language:  Haskell2010
 
 test-suite encoding-test
   type:                exitcode-stdio-1.0
