@@ -1,7 +1,10 @@
+Changes from 0.9 to 0.10
+---------------------------
+
 * Provide the getSystemEncoding function always, improving portability (#26).
-  - The getSystemEncoding function is now present on all platforms.
-  - It now returns Nothing if there is an error, or if running on Windows.
-  - The systemEncoding flag has been dropped.
+  - The `getSystemEncoding` function is now present on all platforms.
+  - *Breaking change*: It now returns `Nothing` if there is an error, or if running on Windows. The result type, therefore, is `Maybe DynEncoding`.
+  - The `systemEncoding` flag has been dropped.
 
 Changes from 0.8.10 to 0.9
 ---------------------------
