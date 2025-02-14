@@ -1,3 +1,8 @@
+* Provide the getSystemEncoding function always, improving portability (#26).
+  - The getSystemEncoding function is now present on all platforms.
+  - It now returns Nothing if there is an error, or if running on Windows.
+  - The systemEncoding flag has been dropped.
+
 Changes from 0.8.10 to 0.9
 ---------------------------
 

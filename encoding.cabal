@@ -18,9 +18,6 @@ Extra-Source-Files:
   system_encoding.h
   system_encoding.c
 
-Flag systemEncoding
-  description: Provide the getSystemEncoding action to query the locale.
-
 Flag generate-encodings
   description: Generate encodings.
   manual: True
@@ -114,14 +111,13 @@ Library
     Data.CharMap
   if impl(ghc >= 7.10)
     GHC-Options: -fno-warn-tabs
-  if flag(systemEncoding)
+  if !os(windows)
     Includes:
       system_encoding.h
     Install-Includes:
       system_encoding.h
     C-Sources:
       system_encoding.c
-    CPP-Options: -DSYSTEM_ENCODING
 
 executable encoding-exe
   main-is: Main.hs

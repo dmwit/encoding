@@ -135,19 +135,19 @@ interact f = do
   line <- hGetLine stdin
   hPutStrLn stdout (f line)
 
-#ifdef SYSTEM_ENCODING
+#ifndef mingw32_HOST_OS
 foreign import ccall "system_encoding.h get_system_encoding"
 	get_system_encoding :: IO CString
 #endif
 
--- | Returns the encoding used on the current system. Currently only supported
--- on Linux-alikes.
-getSystemEncoding :: IO DynEncoding
+-- | On unix machines, returns the system's currently configured text encoding,
+-- or Nothing if there was an error. On Windows, currently always returns Nothing.
+getSystemEncoding :: IO (Maybe DynEncoding)
 getSystemEncoding = do
-#ifdef SYSTEM_ENCODING
-	enc <- get_system_encoding
-	str <- peekCString enc
-	return $ encodingFromString str
+#ifndef mingw32_HOST_OS
+  enc <- get_system_encoding
+  str <- peekCString enc
+  return $ encodingFromStringExplicit str
 #else
-	error "getSystemEncoding is not supported on this platform"
+  return Nothing
 #endif
