@@ -34,7 +34,7 @@ Library
                  bytestring >=0.9 && <0.13,
                  containers >=0.4 && <0.8,
                  extensible-exceptions >=0.1 && <0.2,
-                 ghc-prim >=0.3 && <0.13,
+                 ghc-prim >=0.3 && <0.14,
                  mtl >=2.0 && <2.4,
                  regex-compat >=0.71 && <0.96
 
@@ -129,7 +129,7 @@ executable encoding-exe
                      , filepath
                      , containers
                      , HaXml >=1.22 && <1.27
-                     , Cabal >= 2.0 && < 3.14
+                     , Cabal >= 2.0 && < 3.15
                      , encoding
   else
     buildable: False
