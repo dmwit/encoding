@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 module Data.Encoding.Exception where
 
-import Control.Exception.Extensible
+import Control.Exception
 import Data.Word
 import Data.Typeable
 import Control.Monad.Identity

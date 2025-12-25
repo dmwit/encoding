@@ -10,7 +10,7 @@ import Data.Sequence
 import Data.Word
 import Data.Foldable (toList)
 import Control.Throws
-import Control.Exception.Extensible
+import Control.Exception
 import Control.Applicative
 import Control.Monad (ap, liftM)
 import Control.Monad.IO.Class (liftIO)
