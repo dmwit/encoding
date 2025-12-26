@@ -2,7 +2,6 @@
 module Data.Static where
 
 import GHC.Exts
-import GHC.Prim
 import GHC.Word
 import Data.Word
 import Data.Bits
