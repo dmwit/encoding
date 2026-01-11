@@ -14,7 +14,7 @@ import Control.Monad.IO.Class (liftIO)
 import Control.Monad.State (StateT (..), get, gets, put)
 import Control.Monad.Identity (Identity)
 import Control.Monad.Reader (ReaderT, ask)
-import Control.Exception.Extensible
+import Control.Exception
 import Control.Throws
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Lazy as LBS

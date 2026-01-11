@@ -1,7 +1,7 @@
 {-# LANGUAGE FlexibleInstances,MultiParamTypeClasses #-}
 module Control.Throws where
 
-import Control.Exception.Extensible
+import Control.Exception
 import Control.Monad.Identity
 import Control.Monad.Reader
 import Control.Monad.State
