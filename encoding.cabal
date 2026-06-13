@@ -30,9 +30,9 @@ Source-Repository head
 Library
   Build-Depends: array >=0.4 && <0.6,
                  base >=4 && <5,
-                 binary >=0.7 && <0.10,
+                 binary >=0.7 && <0.11,
                  bytestring >=0.9 && <0.13,
-                 containers >=0.4 && <0.8,
+                 containers >=0.4 && <0.9,
                  mtl >=2.0 && <2.4,
                  regex-compat >=0.71 && <0.96
 
@@ -127,7 +127,7 @@ executable encoding-exe
                      , filepath
                      , containers
                      , HaXml >=1.22 && <1.27
-                     , Cabal >= 2.0 && < 3.15
+                     , Cabal >= 2.0 && < 3.17
                      , encoding
   else
     buildable: False
